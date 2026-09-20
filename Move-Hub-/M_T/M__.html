@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>The Guardians (2017) Sinhala Subtitles - Lakmina King👑️</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --accent: #00ffcc;
+    --bg: #05050a;
+    --card: #0c1021;
+    --border: rgba(0, 255, 204, 0.2);
+    --text: #e8e8f0;
+    --muted: #8a99ad;
+  }
+
+  html, body {
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+
+  .header {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(to bottom, #0c1021, #05050a);
+    border-bottom: 1px solid var(--border);
+  }
+  .header h1 {
+    font-size: 26px;
+    color: var(--accent);
+    text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+    margin-bottom: 5px;
+  }
+  .header p { font-size: 13px; color: var(--muted); }
+
+  .player-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 20px auto;
+    background: #0c1021;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 20px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0,255,204,0.1);
+  }
+
+  .player-container h2 {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .player-container p.notice {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 25px;
+    line-height: 1.6;
+  }
+
+  .quality-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .q-btn {
+    border: 0;
+    padding: 15px 30px;
+    border-radius: 10px;
+    background: #e50914;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background 0.3s, transform 0.2s;
+    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+  }
+
+  .q-btn:hover {
+    background: #b20710;
+    transform: translateY(-2px);
+  }
+
+  .below-video { padding: 20px 14px 48px; max-width: 640px; margin: 0 auto; }
+  .msg-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 18px 16px; box-shadow: 0 0 20px rgba(0,255,204,0.1); }
+  .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+  .msg-header h3 { font-size: 15px; font-weight: 700; color: var(--accent); }
+
+  .progress-dots { display: flex; gap: 5px; margin-bottom: 14px; }
+  .dot { height: 3px; border-radius: 99px; background: rgba(255,255,255,.1); flex: 1; transition: background .35s; }
+  .dot.done { background: var(--accent); }
+
+  .step { display: none; flex-direction: column; gap: 10px; }
+  .step.active { display: flex; }
+  .step-label { font-size: 13px; color: var(--muted); }
+
+  input[type="text"], input[type="tel"], textarea {
+    width: 100%; background: rgba(255,255,255,.03); border: 1px solid var(--border);
+    border-radius: 11px; color: var(--text); font-family: inherit; font-size: 16px;
+    padding: 12px 14px; outline: none; resize: none;
+  }
+  input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 8px rgba(0,255,204,0.3); }
+
+  .btn-row { display: flex; gap: 8px; }
+  .btn-next {
+    flex: 1; background: var(--accent); border: none; border-radius: 11px; color: #05050a;
+    font-size: 14px; font-weight: 700; padding: 13px; cursor: pointer; font-family: inherit;
+  }
+  .btn-skip {
+    background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 11px;
+    color: var(--muted); font-size: 13px; padding: 13px 16px; cursor: pointer; font-family: inherit;
+  }
+  .form-err { color: #ff8a8a; font-size: 13px; display: none; }
+
+  .success-msg { text-align: center; padding: 12px 0 6px; }
+  .success-msg .s-icon { font-size: 42px; margin-bottom: 10px; }
+  .success-msg p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+  .success-msg strong { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Movies With Sinhala Sub🎟️</h1>
+  <p>🎭</p>
+</div>
+
+<div class="player-container">
+  <h2>Kingsman: The Golden Circle (2017)</h2>
+  <p class="notice">Server restrictions (CORS) නිසා video player එක හරහා සෘජුව ධාවනය කළ නොහැක.<br>කරුණාකර පහත ඇති බොත්තම් මඟින් අවශ්‍ය Quality එක තෝරාගන්න!</p>
+  
+  <div class="quality-buttons">
+    <button class="q-btn" onclick="openVideo('480p')">480P Watch / Download</button>
+    <button class="q-btn" onclick="openVideo('720p')">720P Watch / Download</button>
+    <button class="q-btn" onclick="openVideo('1080p')">1080P Watch / Download</button>
+  </div>
+</div>
+
+<div class="below-video">
+  <div class="msg-card">
+    <div class="msg-header"><span style="font-size:20px">💬</span><h3>ඔබේ අදහස හෝ ප්‍රශ්නය අප වෙත එවන්න</h3></div>
+
+    <div class="progress-dots">
+      <div class="dot done" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div>
+    </div>
+
+    <div class="step active" id="step1">
+      <div class="step-label">👤 ඔබේ නම</div>
+      <input type="text" id="inputName" placeholder="නම මෙහි ලියන්න" maxlength="50" autocomplete="name">
+      <div class="btn-row"><button class="btn-next" id="to2">ඊළඟ →</button></div>
+    </div>
+
+    <div class="step" id="step2">
+      <div class="step-label">📞 දුරකථන අංකය <span style="color:#555;font-size:12px">(අවශ්‍ය නම් පමණි)</span></div>
+      <input type="tel" id="inputPhone" placeholder="+94 7X XXX XXXX" maxlength="20" autocomplete="tel">
+      <div class="btn-row">
+        <button class="btn-skip" id="skip3">හැර යන්න (Skip)</button>
+        <button class="btn-next" id="to3">ඊළඟ →</button>
+      </div>
+    </div>
+
+    <div class="step" id="step3">
+      <div class="step-label">✍️ ඔබේ පණිවිඩය</div>
+      <textarea id="inputMsg" rows="4" maxlength="1000" placeholder="ප්‍රශ්නය හෝ අදහස මෙහි ලියන්න..."></textarea>
+      <div class="form-err" id="formErr">පණිවිඩය යැවීමට නොහැකි විය. කරුණාකර නැවත උත්සාහ කරන්න.</div>
+      <div class="btn-row"><button class="btn-next" id="sendBtn">යවන්න ✈️</button></div>
+    </div>
+
+    <div class="step" id="stepDone">
+      <div class="success-msg">
+        <div class="s-icon">✅</div>
+        <p><strong>පණිවිඩය සාර්ථකව යවන ලදී!</strong><br>Lakmina Manujaya වෙත ඉක්මනින් සම්බන්ධ වනු ඇත 🙏</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CONFIG = {
+  videos: {
+    '480p': 'https://cs01.skylines822.online/CineSubz.com%20-%20Kingsman.The.Golden.Circle.2017.480p.mp4?play=true',
+    '720p': 'https://cs01.skylines822.online/CineSubz.com%20-%20Kingsman.The.Golden.Circle.2017.720p.BluRay.mp4?play=true',
+    '1080p': 'https://cs01.skylines822.online/CineSubz.com%20-%20Kingsman.The.Golden.Circle.2017.1080p.BluRay.mp4?play=true'
+  },
+  botToken: '8524435746:AAGpGH-ygNIUIsn9NGFZBsMUaKDDRpus8eI',
+  chatId: '7883989086'
+};
+
+const $ = id => document.getElementById(id);
+
+window.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const userParamName = urlParams.get('name');
+  const savedLocalStorageName = localStorage.getItem('userName');
+
+  if (userParamName) {
+    $('inputName').value = userParamName;
+    localStorage.setItem('userName', userParamName);
+  } else if (savedLocalStorageName && savedLocalStorageName !== 'Lakmina (Guest)') {
+    $('inputName').value = savedLocalStorageName;
+  } else {
+    $('inputName').value = '';
+    localStorage.setItem('userName', '');
+  }
+});
+
+async function openVideo(quality){
+  const url = CONFIG.videos[quality];
+  if(!url) return;
+
+  let ip = "IP සොයා ගැනීමට නොහැකි විය";
+  try {
+    const ipRes = await fetch('https://api.ipify.org?format=json');
+    const ipData = await ipRes.json();
+    ip = ipData.ip;
+  } catch (e) {}
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const userName = urlParams.get('name') || localStorage.getItem('userName') || $('inputName').value.trim() || 'Guest';
+  const movieName = "Kingsman: The Golden Circle (2017)";
+
+  const telegramText = `🎬 <b>A notice about entering!</b>\n\n👤 Name: ${userName}\n🌐 IP Address: ${ip}\n🔮Quality: ${quality}\n🎥 Movie: ${movieName}`;
+
+  try {
+    await fetch(`https://api.telegram.org/bot${CONFIG.botToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: CONFIG.chatId,
+        text: telegramText,
+        parse_mode: 'HTML'
+      })
+    });
+  } catch (e) {}
+
+  window.open(url, '_blank');
+}
+
+function showStep(n) {
+  ['step1', 'step2', 'step3', 'stepDone'].forEach(id => $(id).classList.remove('active'));
+  $('step' + n).classList.add('active');$('d1').classList.toggle('done', n >= 1);
+  $('d2').classList.toggle('done', n >= 2);$('d3').classList.toggle('done', n >= 3);
+}
+
+function goStep2() {
+  if (!$('inputName').value.trim()) {$('inputName').focus(); return; }
+  localStorage.setItem('userName', $('inputName').value.trim());
+  showStep(2); setTimeout(() => $('inputPhone').focus(), 80);
+}
+
+function goStep3() { showStep(3); setTimeout(() => $('inputMsg').focus(), 80); }
+
+$('to2').onclick = goStep2; 
+$('to3').onclick = goStep3; 
+$('skip3').onclick = goStep3;
+
+async function sendMsg() {
+  const name  = $('inputName').value.trim() || '_';
+  const phone = $('inputPhone').value.trim() || '—';
+  const msg   = $('inputMsg').value.trim();
+  if (!msg) { $('inputMsg').focus(); return; }
+
+  const btn = $('sendBtn');
+  btn.disabled = true; btn.textContent = 'යවනවා...'; $('formErr').style.display = 'none';
+
+  const telegramText = `📩 User Message\n\n👤 Name: ${name}\n📞 Phone number: ${phone}\n\n✍️ Message:\n${msg}`;
+  const url = `https://api.telegram.org/bot${CONFIG.botToken}/sendMessage`;
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: CONFIG.chatId, text: telegramText })
+    });
+    if (!res.ok) throw new Error();
+    showStep('Done');
+  } catch {
+    $('formErr').style.display = 'block';
+    btn.disabled = false; btn.textContent = '🔄 නැවත උත්සාහ කරන්න';
+  }
+}
+$('sendBtn').onclick = sendMsg;
+</script>
+
+</body>
+</html>
