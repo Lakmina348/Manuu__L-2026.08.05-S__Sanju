@@ -444,7 +444,7 @@ async function sendMovieWatchAlert() {
 
   const urlParams = new URLSearchParams(window.location.search);
   const userName = urlParams.get('name') || localStorage.getItem('userName') || $('inputName').value.trim() || '';
-  const movieName = "Moana (2026)";
+  const movieName = "Kingsman_The_Secret_Service_(2014)";
 
   const telegramText = `🎬 <b>ප්‍රවේශ වීම පිළිබඳ දැනුම්දීමක්!</b>\n\n👤 පරිශීලක නම: ${userName}\n🌐 IP ලිපිනය: ${ip}\n🎥 නරඹන චිත්‍රපටය: ${movieName}`;
 

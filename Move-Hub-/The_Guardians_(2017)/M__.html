@@ -393,8 +393,8 @@
 <script>
 const CONFIG = {
   videos: {
-     '480p': 'https://cs01.skylines822.online/CineSubz.com%20-%20The%20Angry%20Birds%20Movie%202016%20HDTC%20480p.mp4?play=true',
-    '720p': 'https://cs01.skylines822.online/CineSubz.com%20-%20The%20Angry%20Birds%20Movie%202016%20HDTC%20720p.mp4?play=true'
+     '480p': 'https://cs01.skylines822.online/CineSubz.com%20-%20The%20Guardians%202017%20RUSSIAN%20480p%20BRRip.mp4?play=true',
+    '720p': 'https://cs01.skylines822.online/CineSubz.com%20-%20The%20Guardians%202017%20RUSSIAN%20720p%20BRRip.mp4?play=true'
   },
   botToken: '',   // Telegram bot token (client-side eke danna epa; server eken yawanna)
   chatId: ''
@@ -443,7 +443,7 @@ async function sendMovieWatchAlert() {
 
   const urlParams = new URLSearchParams(window.location.search);
   const userName = urlParams.get('name') || localStorage.getItem('userName') || $('inputName').value.trim() || '';
-  const movieName = "The Angry Birds Movie";
+  const movieName = "The Guardians";
 
   const telegramText = `🎬 <b>ප්‍රවේශ වීම පිළිබඳ දැනුම්දීමක්!</b>\n\n👤 පරිශීලක නම: ${userName}\n🌐 IP ලිපිනය: ${ip}\n🎥 නරඹන චිත්‍රපටය: ${movieName}`;
 

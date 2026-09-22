@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>The Guardians (2017) Sinhala Subtitles - Lakmina King👑️</title>
+<!-- Video server eka oyage site eke address eka block karanna nisa, referrer eka yawanne na -->
+<meta name="referrer" content="no-referrer">
+<title>Moana (2026) Sinhala Subtitles - Lakmina King👑️</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
@@ -38,56 +40,185 @@
   }
   .header p { font-size: 13px; color: var(--muted); }
 
-  .player-container {
+  .player {
+    position: relative;
     width: 100%;
     max-width: 1100px;
-    margin: 20px auto;
-    background: #0c1021;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 40px 20px;
-    text-align: center;
-    box-shadow: 0 0 30px rgba(0,255,204,0.1);
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    border-bottom: 1px solid var(--border);
   }
+  .player video { width: 100%; height: 100%; display: block; background: #000; object-fit: contain; }
 
-  .player-container h2 {
-    font-size: 24px;
-    color: #fff;
-    margin-bottom: 12px;
-  }
-
-  .player-container p.notice {
-    font-size: 14px;
-    color: var(--muted);
-    margin-bottom: 25px;
-    line-height: 1.6;
-  }
-
-  .quality-buttons {
+  /* Text-only links over the video (no box, does not block the video) */
+  .watermark-cover {
+    position: absolute;
+    bottom: 79px;
+    left: 12px;
+    z-index: 85;
     display: flex;
-    gap: 15px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
+    flex-direction: column;
+    gap: 1px;
+    pointer-events: none;      /* video taps pass through the empty area */
   }
+  .watermark-cover a {
+    pointer-events: auto;      /* only the letters are clickable */
+    color: #fff;
+    font-size: 12px;
+    font-weight: 900;
+    text-decoration: none;
+    white-space: nowrap;
+    padding: 2px 0;
+    background: none;
+    text-shadow: 0 0 3px #000, 0 0 6px #000, 0 2px 8px #000;
+  }
+  .watermark-cover a:hover { color: var(--accent); }
 
-  .q-btn {
-    border: 0;
-    padding: 15px 30px;
-    border-radius: 10px;
-    background: #e50914;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 16px;
-    transition: background 0.3s, transform 0.2s;
-    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+  /* ===== Fullscreen fix: player fills the whole screen ===== */
+  .player:fullscreen {
+    max-width: none; width: 100%; height: 100%;
+    aspect-ratio: auto; margin: 0; border: none;
   }
+  .player:fullscreen .watermark-cover { bottom: 90px; left: 20px; }
+  .player:fullscreen .watermark-cover a { font-size: 16px; }
 
-  .q-btn:hover {
-    background: #b20710;
-    transform: translateY(-2px);
+  .player:-webkit-full-screen {
+    max-width: none; width: 100%; height: 100%;
+    aspect-ratio: auto; margin: 0; border: none;
   }
+  .player:-webkit-full-screen .watermark-cover { bottom: 90px; left: 20px; }
+  .player:-webkit-full-screen .watermark-cover a { font-size: 16px; }
+
+  /* 10-Seconds Countdown Overlay */
+  .countdown-overlay {
+    position: absolute;
+    top: 13px;
+    right: 13px;
+    background: rgba(5, 5, 10, 0.75);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    z-index: 30;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+  }
+  .countdown-overlay.show { display: flex; }
+  .countdown-overlay span { font-size: 11px; color: var(--accent); font-weight: 600; }
+  .countdown-num { font-size: 14px; font-weight: 800; color: #fff; }
+
+  .big-play {
+    position: absolute; inset: 0; margin: auto;
+    width: 76px; height: 76px; border-radius: 50%;
+    background: rgba(0, 255, 204, 0.9); border: 8px solid rgba(0, 255, 204, 0.3);
+    background-clip: padding-box;
+    display: grid; place-items: center; cursor: pointer;
+    transition: opacity .2s, transform .2s;
+    z-index: 10;
+  }
+  .big-play svg { width: 30px; height: 30px; fill: #05050a; margin-left: 4px; }
+  .player.playing .big-play { opacity: 0; pointer-events: none; transform: scale(.8); }
+
+  .buffering {
+    position: absolute; inset: 0; margin: auto; width: 44px; height: 44px;
+    border: 3px solid rgba(0,255,204,.25); border-top-color: var(--accent); border-radius: 50%;
+    animation: spin .8s linear infinite; display: none; pointer-events: none; z-index: 10;
+  }
+  .player.loading .buffering { display: block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .skip-flash {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    padding: 14px 18px; border-radius: 40px; background: rgba(5,5,10,.8);
+    color: var(--accent); border: 1px solid var(--border);
+    font-size: 15px; font-weight: 700; opacity: 0; pointer-events: none;
+    transition: opacity .25s; z-index: 15;
+  }
+  .skip-flash.left { left: 12%; }
+  .skip-flash.right { right: 12%; }
+  .skip-flash.show { opacity: 1; }
+
+  .controls {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 28px 12px 8px;
+    background: linear-gradient(transparent, rgba(5,5,10,.95));
+    transition: opacity .25s;
+    z-index: 20;
+  }
+  .player.idle.playing .controls { opacity: 0; pointer-events: none; }
+  .player.idle.playing { cursor: none; }
+
+  .seek-wrap { position: relative; height: 18px; display: flex; align-items: center; cursor: pointer; touch-action: none; }
+  .seek-track { position: relative; width: 100%; height: 4px; border-radius: 4px; background: rgba(255,255,255,.22); transition: height .12s; }
+  .seek-wrap:hover .seek-track, .seek-wrap.dragging .seek-track { height: 6px; }
+  .seek-buffer, .seek-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
+  .seek-buffer { background: rgba(255,255,255,.3); width: 0; }
+  .seek-fill { background: var(--accent); width: 0; }
+  .seek-thumb {
+    position: absolute; top: 50%; width: 13px; height: 13px; border-radius: 50%;
+    background: #fff; transform: translate(-50%, -50%); left: 0;
+  }
+  .seek-tip {
+    position: absolute; bottom: 22px; transform: translateX(-50%);
+    background: rgba(0,0,0,.9); color: var(--accent); padding: 3px 7px; border-radius: 5px;
+    font-size: 12px; display: none; pointer-events: none; border: 1px solid var(--border);
+  }
+  .seek-wrap:hover .seek-tip { display: block; }
+
+  .row { display: flex; align-items: center; gap: 2px; margin-top: 2px; }
+  .spacer { flex: 1; }
+  .cbtn {
+    background: none; border: none; color: #fff; cursor: pointer;
+    width: 40px; height: 40px; border-radius: 8px; display: grid; place-items: center;
+    font-family: inherit; font-size: 13px; font-weight: 700;
+  }
+  .cbtn:hover { background: rgba(255,255,255,.14); }
+  .cbtn svg { width: 22px; height: 22px; fill: #fff; }
+  .cbtn.txt { width: auto; padding: 0 10px; color: var(--accent); }
+
+  .time { font-size: 13px; padding: 0 8px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .vol { display: flex; align-items: center; }
+  .vol input[type=range] {
+    width: 0; opacity: 0; transition: width .2s, opacity .2s; accent-color: var(--accent);
+    height: 4px; cursor: pointer;
+  }
+  .vol:hover input[type=range], .vol input[type=range]:focus { width: 78px; opacity: 1; margin-right: 8px; }
+
+  .menu {
+    position: absolute; right: 12px; bottom: 62px; min-width: 140px;
+    background: rgba(12,16,33,.98); border: 1px solid var(--border); border-radius: 12px;
+    padding: 6px; display: none; z-index: 25;
+  }
+  .menu.open { display: block; }
+  .menu h4 { font-size: 12px; color: var(--muted); font-weight: 600; padding: 6px 10px 4px; }
+  .menu button {
+    display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 12px;
+    background: none; border: none; color: var(--text); font-family: inherit; font-size: 14px;
+    padding: 9px 10px; border-radius: 8px; cursor: pointer; text-align: left;
+  }
+  .menu button:hover { background: rgba(0,255,204,.1); }
+  .menu button.sel { color: var(--accent); font-weight: 700; }
+  .menu button.sel::after { content: "✓"; }
+
+  .err {
+    position: absolute; inset: 0; display: none; place-items: center; text-align: center;
+    padding: 24px; background: rgba(5,5,10,.9); font-size: 14px; color: #ff8a8a; line-height: 1.7; z-index: 35;
+  }
+  .player.error .err { display: grid; }
+
+  .tips-bar {
+    max-width: 1100px; margin: 0 auto;
+    background: #080b16; border-bottom: 1px solid var(--border);
+    padding: 10px 14px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .tip-row { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+  .tip-row b { color: var(--accent); font-weight: 600; }
 
   .below-video { padding: 20px 14px 48px; max-width: 640px; margin: 0 auto; }
   .msg-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 18px 16px; box-shadow: 0 0 20px rgba(0,255,204,0.1); }
@@ -124,6 +255,20 @@
   .success-msg .s-icon { font-size: 42px; margin-bottom: 10px; }
   .success-msg p { font-size: 14px; color: var(--muted); line-height: 1.7; }
   .success-msg strong { color: var(--accent); }
+
+  .site-footer {
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+  }
+  .site-footer a {
+    color: var(--accent);
+    text-decoration: none;
+    margin: 0 10px;
+    font-size: 13px;
+  }
+  .site-footer a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -133,15 +278,75 @@
   <p>🎭</p>
 </div>
 
-<div class="player-container">
-  <h2>Kingsman: The Golden Circle (2017)</h2>
-  <p class="notice">Server restrictions (CORS) නිසා video player එක හරහා සෘජුව ධාවනය කළ නොහැක.<br>කරුණාකර පහත ඇති බොත්තම් මඟින් අවශ්‍ය Quality එක තෝරාගන්න!</p>
-  
-  <div class="quality-buttons">
-    <button class="q-btn" onclick="openVideo('480p')">480P Watch / Download</button>
-    <button class="q-btn" onclick="openVideo('720p')">720P Watch / Download</button>
-    <button class="q-btn" onclick="openVideo('1080p')">1080P Watch / Download</button>
+<div class="player" id="player" tabindex="0" aria-label="Video player">
+  <video id="video" playsinline preload="metadata" referrerpolicy="no-referrer"></video>
+
+  <!-- Two text links pointing to 1.html -->
+  <div class="watermark-cover">
+    <a href="1.html">Movies With Sinhala Sub</a>
+    <a href="1.html">Lakmina-0788637885</a>
   </div>
+
+  <!-- Small 10-Seconds Countdown Overlay while Video Plays -->
+  <div class="countdown-overlay" id="countdownOverlay">
+    <span>...</span>
+    <div class="countdown-num" id="countdownNum">10</div>
+  </div>
+
+  <div class="big-play" id="bigPlay" role="button" aria-label="Play">
+    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+  </div>
+  <div class="buffering"></div>
+  <div class="skip-flash left" id="flashL">⏪ 10s</div>
+  <div class="skip-flash right" id="flashR">10s ⏩</div>
+  <div class="err" id="err">
+    <div>
+      වීඩියෝව ප්‍රදර්ශනය කිරීමේ දෝෂයක් ඇත.<br>
+      <span id="errCode" style="color:#8a99ad;font-size:12px"></span><br>
+      <button class="btn-skip" id="errRetry" style="margin:8px 4px 0">🔄 නැවත try කරන්න</button>
+      <a class="btn-skip" id="errOpen" href="#" target="_blank" rel="noreferrer noopener" style="margin:8px 4px 0;display:inline-block;text-decoration:none">🔗 Link එක Open කරන්න</a>
+    </div>
+  </div>
+
+  <div class="menu" id="menu"></div>
+
+  <div class="controls" id="controls">
+    <div class="seek-wrap" id="seek">
+      <div class="seek-track">
+        <div class="seek-buffer" id="seekBuf"></div>
+        <div class="seek-fill" id="seekFill"></div>
+        <div class="seek-thumb" id="seekThumb"></div>
+      </div>
+      <div class="seek-tip" id="seekTip">0:00</div>
+    </div>
+
+    <div class="row">
+      <button class="cbtn" id="btnPlay" aria-label="Play / Pause"></button>
+      <button class="cbtn" id="btnBack" aria-label="Back 10 seconds">
+        <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8zm-1.1 11h-.9v-4.4l-1 .3v-.7l1.8-.6h.1zm3.9-2.7c0 .5-.1.9-.2 1.2s-.3.5-.5.7-.5.3-.8.3-.6-.1-.8-.3-.4-.4-.5-.7-.2-.7-.2-1.2v-.6c0-.5.1-.9.2-1.2s.3-.5.5-.7.5-.3.8-.3.6.1.8.3.4.4.5.7.2.7.2 1.2zm-.9-.7c0-.3 0-.5-.1-.7s-.1-.3-.2-.4-.2-.1-.4-.1-.3 0-.4.1-.2.2-.2.4-.1.4-.1.7v.8c0 .3 0 .5.1.7s.1.3.2.4.2.1.4.1.3 0 .4-.1.2-.2.2-.4.1-.4.1-.7z"/></svg>
+      </button>
+      <button class="cbtn" id="btnFwd" aria-label="Forward 10 seconds">
+        <svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7a6 6 0 1 0 6 6h2a8 8 0 1 1-8-8zm-1.1 11h-.9v-4.4l-1 .3v-.7l1.8-.6h.1zm3.9-2.7c0 .5-.1.9-.2 1.2s-.3.5-.5.7-.5.3-.8.3-.6-.1-.8-.3-.4-.4-.5-.7-.2-.7-.2-1.2v-.6c0-.5.1-.9.2-1.2s.3-.5.5-.7.5-.3.8-.3.6.1.8.3.4.4.5.7.2.7.2 1.2zm-.9-.7c0-.3 0-.5-.1-.7s-.1-.3-.2-.4-.2-.1-.4-.1-.3 0-.4.1-.2.2-.2.4-.1.4-.1.7v.8c0 .3 0 .5.1.7s.1.3.2.4.2.1.4.1.3 0 .4-.1.2-.2.2-.4.1-.4.1-.7z"/></svg>
+      </button>
+      <div class="vol">
+        <button class="cbtn" id="btnMute" aria-label="Mute"></button>
+        <input type="range" id="volume" min="0" max="1" step="0.05" value="1" aria-label="Volume">
+      </div>
+      <span class="time" id="time">0:00 / 0:00</span>
+      <div class="spacer"></div>
+      <button class="cbtn txt" id="btnQuality" aria-label="Quality">480p</button>
+      <button class="cbtn txt" id="btnSpeed" aria-label="Speed">1x</button>
+      <button class="cbtn" id="btnFs" aria-label="Fullscreen">
+        <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7zm-2-4h2V7h3V5H5zm12 7h-3v2h5v-5h-2zM14 5v2h3v3h2V5z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="tips-bar">
+  <div class="tip-row"><span>📱</span><span>දුරකථනයෙන් නම් — වීඩියෝව මත <b>දෙපාරක් tap</b> කරන්න (වම / දකුණු පැත්ත) තත්පර 10ක් පසුපසට හෝ ඉදිරියට යන්න.</span></div>
+  <div class="tip-row"><span>⌨️</span><span>පරිගණකයෙන් නම් — <b>Space</b> මඟින් play/pause කරන්න, <b>← →</b> මඟින් 10s skip කරන්න.</span></div>
+  <div class="tip-row"><span>🎞️</span><span>Quality එක වෙනස් කරන්න — player එකේ <b>480p</b> බටන් එක ඔබා <b>720p</b> තෝරන්න.</span></div>
 </div>
 
 <div class="below-video">
@@ -183,18 +388,21 @@
   </div>
 </div>
 
+
+
 <script>
 const CONFIG = {
   videos: {
-    '480p': 'https://cs01.skylines822.online/CineSubz.com%20-%20Kingsman.The.Golden.Circle.2017.480p.mp4?play=true',
+     '480p': 'https://cs01.skylines822.online/CineSubz.com%20-%20Kingsman.The.Golden.Circle.2017.480p.mp4?play=true',
     '720p': 'https://cs01.skylines822.online/CineSubz.com%20-%20Kingsman.The.Golden.Circle.2017.720p.BluRay.mp4?play=true',
     '1080p': 'https://cs01.skylines822.online/CineSubz.com%20-%20Kingsman.The.Golden.Circle.2017.1080p.BluRay.mp4?play=true'
-  },
-  botToken: '8524435746:AAGpGH-ygNIUIsn9NGFZBsMUaKDDRpus8eI',
-  chatId: '7883989086'
+};
+  botToken: '',   // Telegram bot token (client-side eke danna epa; server eken yawanna)
+  chatId: ''
 };
 
 const $ = id => document.getElementById(id);
+const player = $('player'), video =$('video');
 
 window.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -212,9 +420,20 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-async function openVideo(quality){
-  const url = CONFIG.videos[quality];
-  if(!url) return;
+const ICON = {
+  play:  '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
+  pause: '<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>',
+  vol:   '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4 z"/></svg>',
+  mute:  '<svg viewBox="0 0 24 24"><path d="M16.5 12A4.5 4.5 0 0 0 14 8v2.2l2.5 2.5zM19 12a7 7 0 0 1-.9 3.4l1.5 1.5A9 9 0 0 0 21 12a9 9 0 0 0-7-8.8v2.1A7 7 0 0 1 19 12zM4.3 3 3 4.3 7.7 9H3v6h4l5 5v-6.7l4.3 4.3c-.7.5-1.4.9-2.3 1.2v2.1a9 9 0 0 0 3.6-1.8l2 2 1.3-1.3L4.3 3zM12 4 9.9 6.1 12 8.2z"/></svg>'
+};
+
+let currentQuality = '480p';
+video.src = CONFIG.videos[currentQuality];
+
+let hasSentNotification = false;
+async function sendMovieWatchAlert() {
+  if (hasSentNotification || !CONFIG.botToken || !CONFIG.chatId) return;
+  hasSentNotification = true;
 
   let ip = "IP සොයා ගැනීමට නොහැකි විය";
   try {
@@ -224,10 +443,10 @@ async function openVideo(quality){
   } catch (e) {}
 
   const urlParams = new URLSearchParams(window.location.search);
-  const userName = urlParams.get('name') || localStorage.getItem('userName') || $('inputName').value.trim() || 'Guest';
-  const movieName = "Kingsman: The Golden Circle (2017)";
+  const userName = urlParams.get('name') || localStorage.getItem('userName') || $('inputName').value.trim() || '';
+  const movieName = "Kingsman: The Golden Circle";
 
-  const telegramText = `🎬 <b>A notice about entering!</b>\n\n👤 Name: ${userName}\n🌐 IP Address: ${ip}\n🔮Quality: ${quality}\n🎥 Movie: ${movieName}`;
+  const telegramText = `🎬 <b>ප්‍රවේශ වීම පිළිබඳ දැනුම්දීමක්!</b>\n\n👤 පරිශීලක නම: ${userName}\n🌐 IP ලිපිනය: ${ip}\n🎥 නරඹන චිත්‍රපටය: ${movieName}`;
 
   try {
     await fetch(`https://api.telegram.org/bot${CONFIG.botToken}/sendMessage`, {
@@ -240,27 +459,224 @@ async function openVideo(quality){
       })
     });
   } catch (e) {}
-
-  window.open(url, '_blank');
 }
+
+let isCountdownDone = false;
+function handlePlayWithCountdown() {
+  if (video.paused) {
+    video.play();
+    sendMovieWatchAlert();
+
+    if (!isCountdownDone) {
+      const overlay = $('countdownOverlay');
+      const numEl = $('countdownNum');
+      overlay.classList.add('show');
+
+      let timeLeft = 10;
+      numEl.textContent = timeLeft;
+
+      const timer = setInterval(() => {
+        timeLeft--;
+        if (timeLeft > 0) {
+          numEl.textContent = timeLeft;
+        } else {
+          clearInterval(timer);
+          overlay.classList.remove('show');
+          isCountdownDone = true;
+        }
+      }, 1000);
+    }
+  } else {
+    video.pause();
+  }
+}
+
+$('btnPlay').onclick = handlePlayWithCountdown;
+$('bigPlay').onclick = handlePlayWithCountdown;
+
+const fmt = s => {
+  if (!isFinite(s)) return '0:00';
+  s = Math.floor(s);
+  const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60;
+  return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(sec).padStart(2, '0');
+};
+
+function seekBy(d) {
+  video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + d));
+  flash(d < 0 ? $('flashL') :$('flashR'));
+}
+let flashT;
+function flash(el) {
+  el.classList.add('show'); clearTimeout(flashT);
+  flashT = setTimeout(() => el.classList.remove('show'), 500);
+}
+
+$('btnPlay').innerHTML = ICON.play;
+$('btnMute').innerHTML = ICON.vol;
+
+video.addEventListener('play',  () => { player.classList.add('playing'); $('btnPlay').innerHTML = ICON.pause; });
+video.addEventListener('pause', () => { player.classList.remove('playing'); $('btnPlay').innerHTML = ICON.play; });
+video.addEventListener('waiting', () => player.classList.add('loading'));
+video.addEventListener('canplay', () => player.classList.remove('loading'));
+video.addEventListener('playing', () => player.classList.remove('loading'));
+const triedQualities = new Set();
+video.addEventListener('error', () => {
+  triedQualities.add(currentQuality);
+  // Try the other quality once before showing the error
+  const other = Object.keys(CONFIG.videos).find(q => !triedQualities.has(q));
+  if (other) { setQuality(other); return; }
+
+  const codes = { 1: 'Aborted', 2: 'Network error (server/link)', 3: 'Decode error (file kadila)', 4: 'Blocked / expired link / not a video' };
+  const c = video.error ? video.error.code : 0;
+  $('errCode').textContent = 'Error code: ' + c + (codes[c] ? ' — ' + codes[c] : '');
+  $('errOpen').href = CONFIG.videos[currentQuality];
+  player.classList.remove('loading');
+  player.classList.add('error');
+});
+video.addEventListener('loadeddata', () => triedQualities.clear());
+$('errRetry').onclick = () => {
+  triedQualities.clear();
+  player.classList.remove('error');
+  player.classList.add('loading');
+  video.src = CONFIG.videos[currentQuality];
+  video.load();
+};
+
+$('btnBack').onclick = () => seekBy(-10);$('btnFwd').onclick  = () => seekBy(10);
+
+let lastTap = 0, tapTimer;
+video.addEventListener('click', e => {
+  const now = Date.now();
+  const rect = video.getBoundingClientRect();
+  const x = (e.clientX - rect.left) / rect.width;
+  if (now - lastTap < 300) {
+    clearTimeout(tapTimer);
+    if (x < 0.4) seekBy(-10); else if (x > 0.6) seekBy(10); else toggleFs();
+    lastTap = 0;
+  } else {
+    lastTap = now;
+    tapTimer = setTimeout(handlePlayWithCountdown, 300);
+  }
+});
+
+video.addEventListener('timeupdate', () => {
+  if (dragging) return;
+  const p = video.duration ? video.currentTime / video.duration * 100 : 0;
+  $('seekFill').style.width = p + '%';
+  $('seekThumb').style.left = p + '\%';$('time').textContent = fmt(video.currentTime) + ' / ' + fmt(video.duration);
+});
+video.addEventListener('loadedmetadata', () => {
+  $('time').textContent = '0:00 / ' + fmt(video.duration);
+});
+
+const seek = $('seek');
+let dragging = false;
+function seekFromEvent(e) {
+  const r = seek.getBoundingClientRect();
+  return Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+}
+function previewSeek(p) {
+  $('seekFill').style.width = p * 100 + '%';
+  $('seekThumb').style.left = p * 100 + '\%';$('time').textContent = fmt(p * video.duration) + ' / ' + fmt(video.duration);
+}
+seek.addEventListener('pointerdown', e => {
+  dragging = true; seek.classList.add('dragging'); seek.setPointerCapture(e.pointerId);
+  previewSeek(seekFromEvent(e));
+});
+seek.addEventListener('pointermove', e => {
+  const p = seekFromEvent(e);
+  $('seekTip').style.left = p * 100 + '\%';$('seekTip').textContent = fmt(p * video.duration);
+  if (dragging) previewSeek(p);
+});
+seek.addEventListener('pointerup', e => {
+  if (!dragging) return;
+  dragging = false; seek.classList.remove('dragging');
+  video.currentTime = seekFromEvent(e) * video.duration;
+});
+
+$('volume').oninput = e => { video.volume = e.target.value; video.muted = video.volume === 0; };$('btnMute').onclick = () => { video.muted = !video.muted; };
+video.addEventListener('volumechange', () => {
+  $('btnMute').innerHTML = (video.muted || video.volume === 0) ? ICON.mute : ICON.vol;
+  $('volume').value = video.muted ? 0 : video.volume;
+});
+
+/* ===== Menus (Speed + Quality share one popup) ===== */
+const menu = $('menu');
+let menuType = null;
+
+function openMenu(type, title, items, current, onPick) {
+  if (menu.classList.contains('open') && menuType === type) {
+    menu.classList.remove('open');
+    return;
+  }
+  menuType = type;
+  menu.innerHTML = '<h4>' + title + '</h4>';
+  items.forEach(it => {
+    const b = document.createElement('button');
+    b.textContent = it.label;
+    if (it.v === current) b.className = 'sel';
+    b.onclick = () => { onPick(it); menu.classList.remove('open'); };
+    menu.appendChild(b);
+  });
+  menu.classList.add('open');
+}
+
+/* Speed */
+const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2].map(s => ({ label: s === 1 ? 'Normal' : s + 'x', v: s }));
+$('btnSpeed').onclick = () => {
+  openMenu('speed', 'වේගය (Speed)', SPEEDS, video.playbackRate, s => {
+    video.playbackRate = s.v;
+    $('btnSpeed').textContent = s.label;
+  });
+};
+
+/* Quality: keeps the current time and play/pause state */
+const QUALITIES = Object.keys(CONFIG.videos).filter(q => CONFIG.videos[q]).map(q => ({ label: q, v: q }));
+
+function setQuality(q) {
+  if (q === currentQuality || !CONFIG.videos[q]) return;
+  const t = video.currentTime || 0;
+  const wasPlaying = !video.paused;
+  const rate = video.playbackRate;
+
+  currentQuality = q;
+  $('btnQuality').textContent = q;
+  player.classList.remove('error');
+  player.classList.add('loading');
+
+  video.src = CONFIG.videos[q];
+  video.addEventListener('loadedmetadata', function restore() {
+    video.removeEventListener('loadedmetadata', restore);
+    video.currentTime = t;
+    video.playbackRate = rate;
+    if (wasPlaying) video.play().catch(() => {});
+  });
+}
+
+$('btnQuality').onclick = () => {
+  openMenu('quality', 'Quality', QUALITIES, currentQuality, it => setQuality(it.v));
+};
+
+function toggleFs() {
+  if (document.fullscreenElement || document.webkitFullscreenElement) {
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+  } else if (player.requestFullscreen) player.requestFullscreen();
+  else if (player.webkitRequestFullscreen) player.webkitRequestFullscreen();
+  else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+}
+$('btnFs').onclick = toggleFs;
 
 function showStep(n) {
   ['step1', 'step2', 'step3', 'stepDone'].forEach(id => $(id).classList.remove('active'));
   $('step' + n).classList.add('active');$('d1').classList.toggle('done', n >= 1);
   $('d2').classList.toggle('done', n >= 2);$('d3').classList.toggle('done', n >= 3);
 }
-
 function goStep2() {
   if (!$('inputName').value.trim()) {$('inputName').focus(); return; }
   localStorage.setItem('userName', $('inputName').value.trim());
   showStep(2); setTimeout(() => $('inputPhone').focus(), 80);
 }
-
-function goStep3() { showStep(3); setTimeout(() => $('inputMsg').focus(), 80); }
-
-$('to2').onclick = goStep2; 
-$('to3').onclick = goStep3; 
-$('skip3').onclick = goStep3;
+function goStep3() { showStep(3); setTimeout(() => $('inputMsg').focus(), 80); }$('to2').onclick = goStep2; $('to3').onclick = goStep3; $('skip3').onclick = goStep3;
 
 async function sendMsg() {
   const name  = $('inputName').value.trim() || '_';
@@ -268,10 +684,11 @@ async function sendMsg() {
   const msg   = $('inputMsg').value.trim();
   if (!msg) { $('inputMsg').focus(); return; }
 
+  if (!CONFIG.botToken || !CONFIG.chatId) { $('formErr').style.display = 'block'; return; }
   const btn = $('sendBtn');
   btn.disabled = true; btn.textContent = 'යවනවා...'; $('formErr').style.display = 'none';
 
-  const telegramText = `📩 User Message\n\n👤 Name: ${name}\n📞 Phone number: ${phone}\n\n✍️ Message:\n${msg}`;
+  const telegramText = `📩 User Message\n\n👤 නම: ${name}\n📞 දුරකථන අංකය: ${phone}\n\n✍️ පණිවිඩය:\n${msg}`;
   const url = `https://api.telegram.org/bot${CONFIG.botToken}/sendMessage`;
 
   try {
