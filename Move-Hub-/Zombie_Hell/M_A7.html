@@ -2,593 +2,682 @@
 <html lang="si">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Video Player</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<title>Movies With Sinhala Sub - Lakmina King👑️</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
   :root {
-    --accent: #4f8ef7; --bg: #0d0d0d; --card: #161622;
-    --border: rgba(255,255,255,0.09); --text: #e8e8f0; --muted: #666;
+    --accent: #00ffcc;
+    --bg: #05050a;
+    --card: #0c1021;
+    --border: rgba(0, 255, 204, 0.2);
+    --text: #e8e8f0;
+    --muted: #8a99ad;
   }
-  html, body { width: 100%; background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; overflow-x: hidden; }
 
-  /* VIDEO */
-  .video-wrap { position: relative; width: 100%; padding-top: 56.25%; background: #000; overflow: hidden; }
-  .video-wrap iframe { position: absolute; left: 0; width: 100%; border: none; top: -42px; height: calc(100% + 84px); }
-  .video-wrap::before, .video-wrap::after { content: ''; position: absolute; left: 0; right: 0; background: #000; z-index: 2; pointer-events: none; }
-  .video-wrap::before { top: 0; height: 42px; }
-  .video-wrap::after  { bottom: 0; height: 42px; }
-  .end-overlay { position: absolute; inset: 0; background: #000; z-index: 5; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 14px; }
-  .end-overlay.show { display: flex; }
-  .end-overlay p { color: rgba(255,255,255,0.75); font-size: 15px; }
-  .replay-btn { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); border-radius: 10px; color: #fff; font-size: 14px; font-family: inherit; padding: 11px 24px; cursor: pointer; }
+  html, body {
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    overflow-x: hidden;
+  }
 
-  /* TIPS */
-  .tips-bar { background: #111118; border-bottom: 1px solid var(--border); padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; }
-  .tip-row { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: #888; line-height: 1.5; }
-  .tip-row .tip-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
-  .tip-row span b { color: #bbb; font-weight: 600; }
+  .header {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(to bottom, #0c1021, #05050a);
+    border-bottom: 1px solid var(--border);
+  }
+  .header h1 {
+    font-size: 26px;
+    color: var(--accent);
+    text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+    margin-bottom: 5px;
+  }
+  .header p { font-size: 13px; color: var(--muted); }
 
-  .below-video { padding: 14px 14px 48px; max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+  .player {
+    position: relative;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .player video { width: 100%; height: 100%; display: block; background: #000; object-fit: contain; }
 
-  /* CARDS */
-  .msg-card, .comment-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 18px 16px; }
-  .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
-  .card-header .emoji { font-size: 20px; }
-  .card-header h3 { font-size: 14px; font-weight: 700; color: var(--text); }
+  .watermark-cover {
+    position: absolute;
+    bottom: 79px;
+    left: 12px;
+    z-index: 85;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    pointer-events: none;
+  }
+  .watermark-cover a {
+    pointer-events: auto;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 900;
+    text-decoration: none;
+    white-space: nowrap;
+    padding: 2px 0;
+    background: none;
+    text-shadow: 0 0 3px #000, 0 0 6px #000, 0 2px 8px #000;
+  }
+  .watermark-cover a:hover { color: var(--accent); }
 
-  /* MESSAGE FORM */
-  .progress-dots { display: flex; gap: 5px; margin-bottom: 14px; }
-  .dot { height: 3px; border-radius: 99px; background: rgba(255,255,255,0.1); flex: 1; transition: background 0.35s; }
-  .dot.done { background: var(--accent); }
-  .step { display: none; flex-direction: column; gap: 10px; animation: fadeUp 0.22s ease; }
-  .step.active { display: flex; }
-  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
-  .step-label { font-size: 13px; color: var(--muted); }
-  input[type="text"], input[type="tel"], textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 11px; color: var(--text); font-family: inherit; font-size: 14px; padding: 12px 14px; outline: none; transition: border-color 0.2s; resize: none; -webkit-appearance: none; }
-  input:focus, textarea:focus { border-color: var(--accent); }
-  input::placeholder, textarea::placeholder { color: #444; }
-  .btn-row { display: flex; gap: 8px; }
-  .btn-next { flex: 1; background: var(--accent); border: none; border-radius: 11px; color: #fff; font-size: 14px; font-weight: 700; padding: 13px; cursor: pointer; font-family: inherit; -webkit-tap-highlight-color: transparent; transition: opacity 0.2s, transform 0.15s; }
-  .btn-next:active { transform: scale(0.97); opacity: 0.88; }
-  .btn-skip { background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 11px; color: var(--muted); font-size: 13px; padding: 13px 16px; cursor: pointer; font-family: inherit; -webkit-tap-highlight-color: transparent; }
-  .spinner { width: 15px; height: 15px; border: 2px solid rgba(255,255,255,0.25); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; vertical-align: middle; margin-right: 6px; }
+  .player:fullscreen {
+    max-width: none; width: 100%; height: 100%;
+    aspect-ratio: auto; margin: 0; border: none;
+  }
+  .player:fullscreen .watermark-cover { bottom: 90px; left: 20px; }
+  .player:fullscreen .watermark-cover a { font-size: 16px; }
+
+  .player:-webkit-full-screen {
+    max-width: none; width: 100%; height: 100%;
+    aspect-ratio: auto; margin: 0; border: none;
+  }
+  .player:-webkit-full-screen .watermark-cover { bottom: 90px; left: 20px; }
+  .player:-webkit-full-screen .watermark-cover a { font-size: 16px; }
+
+  .countdown-overlay {
+    position: absolute;
+    top: 13px;
+    right: 13px;
+    background: rgba(5, 5, 10, 0.75);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    z-index: 30;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+  }
+  .countdown-overlay.show { display: flex; }
+  .countdown-overlay span { font-size: 11px; color: var(--accent); font-weight: 600; }
+  .countdown-num { font-size: 14px; font-weight: 800; color: #fff; }
+
+  .big-play {
+    position: absolute; inset: 0; margin: auto;
+    width: 76px; height: 76px; border-radius: 50%;
+    background: rgba(0, 255, 204, 0.9); border: 8px solid rgba(0, 255, 204, 0.3);
+    background-clip: padding-box;
+    display: grid; place-items: center; cursor: pointer;
+    transition: opacity .2s, transform .2s;
+    z-index: 10;
+  }
+  .big-play svg { width: 30px; height: 30px; fill: #05050a; margin-left: 4px; }
+  .player.playing .big-play { opacity: 0; pointer-events: none; transform: scale(.8); }
+
+  .buffering {
+    position: absolute; inset: 0; margin: auto; width: 44px; height: 44px;
+    border: 3px solid rgba(0,255,204,.25); border-top-color: var(--accent); border-radius: 50%;
+    animation: spin .8s linear infinite; display: none; pointer-events: none; z-index: 10;
+  }
+  .player.loading .buffering { display: block; }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  .skip-flash {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    padding: 14px 18px; border-radius: 40px; background: rgba(5,5,10,.8);
+    color: var(--accent); border: 1px solid var(--border);
+    font-size: 15px; font-weight: 700; opacity: 0; pointer-events: none;
+    transition: opacity .25s; z-index: 15;
+  }
+  .skip-flash.left { left: 12%; }
+  .skip-flash.right { right: 12%; }
+  .skip-flash.show { opacity: 1; }
+
+  .controls {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 28px 12px 8px;
+    background: linear-gradient(transparent, rgba(5,5,10,.95));
+    transition: opacity .25s;
+    z-index: 20;
+  }
+  .player.idle.playing .controls { opacity: 0; pointer-events: none; }
+  .player.idle.playing { cursor: none; }
+
+  .seek-wrap { position: relative; height: 18px; display: flex; align-items: center; cursor: pointer; touch-action: none; }
+  .seek-track { position: relative; width: 100%; height: 4px; border-radius: 4px; background: rgba(255,255,255,.22); transition: height .12s; }
+  .seek-wrap:hover .seek-track, .seek-wrap.dragging .seek-track { height: 6px; }
+  .seek-buffer, .seek-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
+  .seek-buffer { background: rgba(255,255,255,.3); width: 0; }
+  .seek-fill { background: var(--accent); width: 0; }
+  .seek-thumb {
+    position: absolute; top: 50%; width: 13px; height: 13px; border-radius: 50%;
+    background: #fff; transform: translate(-50%, -50%); left: 0;
+  }
+  .seek-tip {
+    position: absolute; bottom: 22px; transform: translateX(-50%);
+    background: rgba(0,0,0,.9); color: var(--accent); padding: 3px 7px; border-radius: 5px;
+    font-size: 12px; display: none; pointer-events: none; border: 1px solid var(--border);
+  }
+  .seek-wrap:hover .seek-tip { display: block; }
+
+  .row { display: flex; align-items: center; gap: 2px; margin-top: 2px; }
+  .spacer { flex: 1; }
+  .cbtn {
+    background: none; border: none; color: #fff; cursor: pointer;
+    width: 40px; height: 40px; border-radius: 8px; display: grid; place-items: center;
+    font-family: inherit; font-size: 13px; font-weight: 700;
+  }
+  .cbtn:hover { background: rgba(255,255,255,.14); }
+  .cbtn svg { width: 22px; height: 22px; fill: #fff; }
+  .cbtn.txt { width: auto; padding: 0 10px; color: var(--accent); }
+
+  .time { font-size: 13px; padding: 0 8px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .vol { display: flex; align-items: center; }
+  .vol input[type=range] {
+    width: 0; opacity: 0; transition: width .2s, opacity .2s; accent-color: var(--accent);
+    height: 4px; cursor: pointer;
+  }
+  .vol:hover input[type=range], .vol input[type=range]:focus { width: 78px; opacity: 1; margin-right: 8px; }
+
+  .menu {
+    position: absolute; right: 12px; bottom: 62px; min-width: 140px;
+    background: rgba(12,16,33,.98); border: 1px solid var(--border); border-radius: 12px;
+    padding: 6px; display: none; z-index: 25;
+  }
+  .menu.open { display: block; }
+  .menu h4 { font-size: 12px; color: var(--muted); font-weight: 600; padding: 6px 10px 4px; }
+  .menu button {
+    display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 12px;
+    background: none; border: none; color: var(--text); font-family: inherit; font-size: 14px;
+    padding: 9px 10px; border-radius: 8px; cursor: pointer; text-align: left;
+  }
+  .menu button:hover { background: rgba(0,255,204,.1); }
+  .menu button.sel { color: var(--accent); font-weight: 700; }
+  .menu button.sel::after { content: "✓"; }
+
+  .err {
+    position: absolute; inset: 0; display: none; place-items: center; text-align: center;
+    padding: 24px; background: rgba(5,5,10,.9); font-size: 14px; color: #ff8a8a; line-height: 1.7; z-index: 35;
+  }
+  .player.error .err { display: grid; }
+
+  .tips-bar {
+    max-width: 1100px; margin: 0 auto;
+    background: #080b16; border-bottom: 1px solid var(--border);
+    padding: 10px 14px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .tip-row { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+  .tip-row b { color: var(--accent); font-weight: 600; }
+
+  .below-video { padding: 20px 14px 48px; max-width: 640px; margin: 0 auto; }
+  .msg-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 18px 16px; box-shadow: 0 0 20px rgba(0,255,204,0.1); }
+  .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+  .msg-header h3 { font-size: 15px; font-weight: 700; color: var(--accent); }
+
+  .progress-dots { display: flex; gap: 5px; margin-bottom: 14px; }
+  .dot { height: 3px; border-radius: 99px; background: rgba(255,255,255,.1); flex: 1; transition: background .35s; }
+  .dot.done { background: var(--accent); }
+
+  .step { display: none; flex-direction: column; gap: 10px; }
+  .step.active { display: flex; }
+  .step-label { font-size: 13px; color: var(--muted); }
+
+  input[type="text"], input[type="tel"], textarea {
+    width: 100%; background: rgba(255,255,255,.03); border: 1px solid var(--border);
+    border-radius: 11px; color: var(--text); font-family: inherit; font-size: 16px;
+    padding: 12px 14px; outline: none; resize: none;
+  }
+  input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 8px rgba(0,255,204,0.3); }
+
+  .btn-row { display: flex; gap: 8px; }
+  .btn-next {
+    flex: 1; background: var(--accent); border: none; border-radius: 11px; color: #05050a;
+    font-size: 14px; font-weight: 700; padding: 13px; cursor: pointer; font-family: inherit;
+  }
+  .btn-skip {
+    background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 11px;
+    color: var(--muted); font-size: 13px; padding: 13px 16px; cursor: pointer; font-family: inherit;
+  }
+  .form-err { color: #ff8a8a; font-size: 13px; display: none; }
+
   .success-msg { text-align: center; padding: 12px 0 6px; }
   .success-msg .s-icon { font-size: 42px; margin-bottom: 10px; }
   .success-msg p { font-size: 14px; color: var(--muted); line-height: 1.7; }
-  .success-msg strong { color: var(--text); }
-
-  /* COMMENT BOX */
-  .comment-form { display: flex; flex-direction: column; gap: 10px; }
-  .btn-comment { background: var(--accent); border: none; border-radius: 11px; color: #fff; font-size: 14px; font-weight: 700; padding: 12px; cursor: pointer; font-family: inherit; -webkit-tap-highlight-color: transparent; transition: opacity 0.2s, transform 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
-  .btn-comment:active { transform: scale(0.97); opacity: 0.88; }
-  .btn-comment:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .comment-divider { height: 1px; background: var(--border); margin: 6px 0; display: none; }
-  .comment-divider.show { display: block; }
-  .comment-list { display: flex; flex-direction: column; gap: 12px; }
-
-  .comment-item { display: flex; gap: 10px; animation: fadeUp 0.2s ease; position: relative; }
-
-  /* Long-press progress ring on avatar */
-  .comment-avatar {
-    width: 34px; height: 34px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; font-weight: 700; color: #fff;
-    flex-shrink: 0; margin-top: 1px;
-    cursor: pointer;
-    position: relative;
-    user-select: none; -webkit-user-select: none;
-  }
-  /* SVG ring overlay on avatar */
-  .avatar-ring {
-    position: absolute; inset: -3px;
-    width: calc(100% + 6px); height: calc(100% + 6px);
-    pointer-events: none; transform: rotate(-90deg);
-    opacity: 0; transition: opacity 0.1s;
-  }
-  .avatar-ring circle {
-    fill: none; stroke: #e53935;
-    stroke-width: 2.5;
-    stroke-dasharray: 113; /* 2π×18 */
-    stroke-dashoffset: 113;
-    stroke-linecap: round;
-    transition: stroke-dashoffset 0s linear;
-  }
-  .comment-avatar.pressing .avatar-ring { opacity: 1; }
-  .comment-avatar.pressing .avatar-ring circle { transition: stroke-dashoffset 1.5s linear; stroke-dashoffset: 0; }
-
-  .comment-body { flex: 1; display: flex; flex-direction: column; gap: 3px; }
-  .comment-meta { display: flex; align-items: center; gap: 8px; }
-  .comment-name { font-size: 12.5px; font-weight: 700; color: var(--text); }
-  .comment-time { font-size: 11px; color: var(--muted); }
-  .comment-text { font-size: 13.5px; color: #ccc; line-height: 1.6; word-break: break-word; }
-  .comment-like { display: flex; align-items: center; gap: 4px; background: none; border: none; color: var(--muted); font-size: 12px; font-family: inherit; cursor: pointer; padding: 2px 0; margin-top: 2px; width: fit-content; transition: color 0.15s; }
-  .comment-like:hover { color: #fff; }
-  .comment-like.liked { color: #4f8ef7; }
-
-  /* Delete confirm popup */
-  .delete-popup {
-    position: absolute;
-    top: 0; right: 0;
-    background: #1e1e2e;
-    border: 1px solid rgba(229,57,53,0.35);
-    border-radius: 12px;
-    padding: 10px 12px;
-    display: none;
-    flex-direction: column;
-    gap: 7px;
-    z-index: 10;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-    min-width: 160px;
-    animation: fadeUp 0.15s ease;
-  }
-  .delete-popup.show { display: flex; }
-  .delete-popup p { font-size: 12px; color: var(--muted); }
-  .delete-popup-btns { display: flex; gap: 6px; }
-  .btn-del-confirm {
-    flex: 1; background: #e53935; border: none; border-radius: 8px;
-    color: #fff; font-size: 12px; font-weight: 700; padding: 8px;
-    cursor: pointer; font-family: inherit;
-  }
-  .btn-del-cancel {
-    flex: 1; background: rgba(255,255,255,0.07); border: 1px solid var(--border);
-    border-radius: 8px; color: var(--muted); font-size: 12px;
-    padding: 8px; cursor: pointer; font-family: inherit;
-  }
-
-  /* Admin password modal */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-    z-index: 100; display: none; align-items: center; justify-content: center;
-    padding: 20px;
-  }
-  .modal-overlay.show { display: flex; }
-  .modal-box {
-    background: #1a1a2a; border: 1px solid var(--border);
-    border-radius: 18px; padding: 22px 18px;
-    width: 100%; max-width: 320px;
-    display: flex; flex-direction: column; gap: 14px;
-    animation: fadeUp 0.2s ease;
-  }
-  .modal-box h4 { font-size: 15px; font-weight: 700; color: var(--text); }
-  .modal-box p { font-size: 13px; color: var(--muted); }
-  .modal-err { font-size: 12px; color: #e53935; display: none; }
-  .modal-err.show { display: block; }
-  .modal-btns { display: flex; gap: 8px; }
-  .btn-modal-ok { flex: 1; background: #e53935; border: none; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 700; padding: 12px; cursor: pointer; font-family: inherit; }
-  .btn-modal-cancel { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 10px; color: var(--muted); font-size: 13px; padding: 12px; cursor: pointer; font-family: inherit; }
-
-  .empty-comments { text-align: center; padding: 18px 0 8px; font-size: 13px; color: #333; }
-
-  /* Toast */
-  .toast {
-    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: #1e1e2e; border: 1px solid var(--border);
-    border-radius: 10px; padding: 10px 18px;
-    font-size: 13px; color: var(--text);
-    opacity: 0; transition: opacity 0.25s, transform 0.25s;
-    z-index: 200; white-space: nowrap; pointer-events: none;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .success-msg strong { color: var(--accent); }
 </style>
 </head>
 <body>
 
-<!-- VIDEO -->
-<div class="video-wrap">
-  <iframe id="ytPlayer"
-    src=""
-    allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-  <div class="end-overlay" id="endOverlay">
-    <p>🎬 Video එක ඉවරයි</p>
-    <button class="replay-btn" onclick="replayVideo()">↩ නැවත බලන්න</button>
+<div class="header">
+  <h1>Movies With Sinhala Sub🎟️</h1>
+  <p>🎭</p>
+</div>
+
+<div class="player" id="player" tabindex="0" aria-label="Video player">
+  <video id="video" playsinline preload="metadata" referrerpolicy="no-referrer"></video>
+
+  <div class="watermark-cover">
+    <a href="1.html">Movies With Sinhala Sub</a>
+    <a href="1.html">Lakmina-0788637885</a>
+  </div>
+
+  <div class="countdown-overlay" id="countdownOverlay">
+    <span>...</span>
+    <div class="countdown-num" id="countdownNum">10</div>
+  </div>
+
+  <div class="big-play" id="bigPlay" role="button" aria-label="Play">
+    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+  </div>
+  <div class="buffering"></div>
+  <div class="skip-flash left" id="flashL">⏪ 10s</div>
+  <div class="skip-flash right" id="flashR">10s ⏩</div>
+  <div class="err" id="err">
+    <div>
+      වීඩියෝව ප්‍රදර්ශනය කිරීමේ දෝෂයක් ඇත.<br>
+      <span id="errCode" style="color:#8a99ad;font-size:12px"></span><br>
+      <button class="btn-skip" id="errRetry" style="margin:8px 4px 0">🔄 නැවත try කරන්න</button>
+      <a class="btn-skip" id="errOpen" href="#" target="_blank" rel="noreferrer noopener" style="margin:8px 4px 0;display:inline-block;text-decoration:none">🔗 Link එක Open කරන්න</a>
+    </div>
+  </div>
+
+  <div class="menu" id="menu"></div>
+
+  <div class="controls" id="controls">
+    <div class="seek-wrap" id="seek">
+      <div class="seek-track">
+        <div class="seek-buffer" id="seekBuf"></div>
+        <div class="seek-fill" id="seekFill"></div>
+        <div class="seek-thumb" id="seekThumb"></div>
+      </div>
+      <div class="seek-tip" id="seekTip">0:00</div>
+    </div>
+
+    <div class="row">
+      <button class="cbtn" id="btnPlay" aria-label="Play / Pause"></button>
+      <button class="cbtn" id="btnBack" aria-label="Back 10 seconds">
+        <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8zm-1.1 11h-.9v-4.4l-1 .3v-.7l1.8-.6h.1zm3.9-2.7c0 .5-.1.9-.2 1.2s-.3.5-.5.7-.5.3-.8.3-.6-.1-.8-.3-.4-.4-.5-.7-.2-.7-.2-1.2v-.6c0-.5.1-.9.2-1.2s.3-.5.5-.7.5-.3.8-.3.6.1.8.3.4.4.5.7.2.7.2 1.2zm-.9-.7c0-.3 0-.5-.1-.7s-.1-.3-.2-.4-.2-.1-.4-.1-.3 0-.4.1-.2.2-.2.4-.1.4-.1.7v.8c0 .3 0 .5.1.7s.1.3.2.4.2.1.4.1.3 0 .4-.1.2-.2.2-.4.1-.4.1-.7z"/></svg>
+      </button>
+      <button class="cbtn" id="btnFwd" aria-label="Forward 10 seconds">
+        <svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7a6 6 0 1 0 6 6h2a8 8 0 1 1-8-8zm-1.1 11h-.9v-4.4l-1 .3v-.7l1.8-.6h.1zm3.9-2.7c0 .5-.1.9-.2 1.2s-.3.5-.5.7-.5.3-.8.3-.6-.1-.8-.3-.4-.4-.5-.7-.2-.7-.2-1.2v-.6c0-.5.1-.9.2-1.2s.3-.5.5-.7.5-.3.8-.3.6.1.8.3.4.4.5.7.2.7.2 1.2zm-.9-.7c0-.3 0-.5-.1-.7s-.1-.3-.2-.4-.2-.1-.4-.1-.3 0-.4.1-.2.2-.2.4-.1.4-.1.7v.8c0 .3 0 .5.1.7s.1.3.2.4.2.1.4.1.3 0 .4-.1.2-.2.2-.4.1-.4.1-.7z"/></svg>
+      </button>
+      <div class="vol">
+        <button class="cbtn" id="btnMute" aria-label="Mute"></button>
+        <input type="range" id="volume" min="0" max="1" step="0.05" value="1" aria-label="Volume">
+      </div>
+      <span class="time" id="time">0:00 / 0:00</span>
+      <div class="spacer"></div>
+      <button class="cbtn txt" id="btnQuality" aria-label="Quality">480p</button>
+      <button class="cbtn txt" id="btnSpeed" aria-label="Speed">1x</button>
+      <button class="cbtn" id="btnFs" aria-label="Fullscreen">
+        <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7zm-2-4h2V7h3V5H5zm12 7h-3v2h5v-5h-2zM14 5v2h3v3h2V5z"/></svg>
+      </button>
+    </div>
   </div>
 </div>
 
-<!-- TIPS -->
 <div class="tips-bar">
-  <div class="tip-row"><span class="tip-icon">📱</span><span>Phone එකෙන් බලනවා නම් — <b>video දකුණු පහළ කෙළවරේ ↗ ඇති කොටුව</b> ස්පර්ශ කරන්න full screen වෙනවා</span></div>
-  <div class="tip-row"><span class="tip-icon">⚙️</span><span>Quality වෙනස් කරන්න — player එකේ <b>⚙️ icon එක</b> ස්පර්ශ කරලා <b>Quality</b> තෝරන්න</span></div>
+  <div class="tip-row"><span>📱</span><span>දුරකථනයෙන් නම් — වීඩියෝව මත <b>දෙපාරක් tap</b> කරන්න (වම / දකුණු පැත්ත) තත්පර 10ක් පසුපසට හෝ ඉදිරියට යන්න.</span></div>
+  <div class="tip-row"><span>⌨️</span><span>පරිගණකයෙන් නම් — <b>Space</b> මඟින් play/pause කරන්න, <b>← →</b> මඟින් 10s skip කරන්න.</span></div>
+  <div class="tip-row"><span>🎞️</span><span>Quality එක වෙනස් කරන්න — player එකේ <b>480p</b> බටන් එක ඔබා <b>720p</b> තෝරන්න.</span></div>
 </div>
 
 <div class="below-video">
-
-  <!-- MESSAGE FORM -->
   <div class="msg-card">
-    <div class="card-header"><span class="emoji">💬</span><h3>ඔයාගෙ ප්‍රශ්නය කියන්න</h3></div>
+    <div class="msg-header"><span style="font-size:20px">💬</span><h3>ඔබේ අදහස හෝ ප්‍රශ්නය අප වෙත එවන්න</h3></div>
+
     <div class="progress-dots">
       <div class="dot done" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div>
     </div>
+
     <div class="step active" id="step1">
-      <div class="step-label">👤 ඔයාගේ නම</div>
-      <input type="text" id="inputName" placeholder="නම" maxlength="50" autocomplete="off">
-      <div class="btn-row"><button class="btn-next" onclick="goStep2()">ඊළඟ →</button></div>
+      <div class="step-label">👤 ඔබේ නම</div>
+      <input type="text" id="inputName" placeholder="නම මෙහි ලියන්න" maxlength="50" autocomplete="name">
+      <div class="btn-row"><button class="btn-next" id="to2">ඊළඟ →</button></div>
     </div>
+
     <div class="step" id="step2">
-      <div class="step-label">📞 Phone Number <span style="color:#444;font-size:12px">(ලක්මිණ)</span></div>
-      <input type="tel" id="inputPhone" placeholder="+94 788 637 885" maxlength="20" autocomplete="off">
+      <div class="step-label">📞 දුරකථන අංකය <span style="color:#555;font-size:12px">(අවශ්‍ය නම් පමණි)</span></div>
+      <input type="tel" id="inputPhone" placeholder="+94 7X XXX XXXX" maxlength="20" autocomplete="tel">
       <div class="btn-row">
-        <button class="btn-skip" onclick="goStep3()">Skip</button>
-        <button class="btn-next" onclick="goStep3()">ඊළඟ →</button>
+        <button class="btn-skip" id="skip3">හැර යන්න (Skip)</button>
+        <button class="btn-next" id="to3">ඊළඟ →</button>
       </div>
     </div>
+
     <div class="step" id="step3">
-      <div class="step-label">✍️ ඔයාගේ ප්‍රශ්නය හෝ Message</div>
-      <textarea id="inputMsg" rows="4" placeholder="ප්‍රශ්නය ලියන්න..."></textarea>
-      <div class="btn-row"><button class="btn-next" id="sendBtn" onclick="sendMsg()">යවන්න ✈️</button></div>
+      <div class="step-label">✍️ ඔබේ පණිවිඩය</div>
+      <textarea id="inputMsg" rows="4" maxlength="1000" placeholder="ප්‍රශ්නය හෝ අදහස මෙහි ලියන්න..."></textarea>
+      <div class="form-err" id="formErr">පණිවිඩය යැවීමට නොහැකි විය. කරුණාකර නැවත උත්සාහ කරන්න.</div>
+      <div class="btn-row"><button class="btn-next" id="sendBtn">යවන්න ✈️</button></div>
     </div>
+
     <div class="step" id="stepDone">
       <div class="success-msg">
         <div class="s-icon">✅</div>
-        <p><strong>Message එක ගිහිල්ලා!</strong><br>ඉක්මනටම reply කරනවා 🙏</p>
+        <p><strong>පණිවිඩය සාර්ථකව යවන ලදී!</strong><br>Lakmina Manujaya වෙත ඉක්මනින් සම්බන්ධ වනු ඇත 🙏</p>
       </div>
     </div>
   </div>
-
-  <!-- COMMENT BOX -->
-  <div class="comment-card">
-    <div class="card-header">
-      <span class="emoji">🗨️</span>
-      <h3>Comments <span id="commentCount" style="color:var(--muted);font-weight:400;font-size:13px"></span></h3>
-    </div>
-    <div class="comment-form">
-      <input type="text" id="cmtName" placeholder="ඔයාගේ නම" maxlength="40" autocomplete="off">
-      <textarea id="cmtText" rows="3" placeholder="ඔයාගේ comment ලියන්න..."></textarea>
-      <button class="btn-comment" onclick="postComment()"><span>💬</span> Comment දාන්න</button>
-    </div>
-    <div class="comment-divider" id="cmtDivider"></div>
-    <div class="comment-list" id="commentList">
-      <div class="empty-comments" id="emptyMsg">පළමු comment එක ඔයා දාන්න! 👇</div>
-    </div>
-  </div>
-
 </div>
-
-<!-- Admin password modal -->
-<div class="modal-overlay" id="adminModal">
-  <div class="modal-box">
-    <h4>🔐 Admin Confirm</h4>
-    <p>Delete කරන්න password දෙන්න</p>
-    <input type="password" id="adminPass" placeholder="Password" autocomplete="off">
-    <div class="modal-err" id="modalErr">❌ Password වැරදියි</div>
-    <div class="modal-btns">
-      <button class="btn-modal-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-modal-ok" onclick="confirmDelete()">Delete 🗑️</button>
-    </div>
-  </div>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
 
 <script>
-  /* ════════════════════════════════════════════════════════════
-     VIDEO LINK — මෙතන විතරක් video එකේ YouTube link එක දාන්න.
-     සම්පූර්ණ link එකම (https://youtube.com/watch?v=... හෝ
-     https://youtu.be/... හෝ video ID එක විතරක්) paste කරන්න පුළුවන්.
-     ════════════════════════════════════════════════════════════ */
-  const YOUTUBE_LINK = 'https://youtu.be/nskDzpQNl9M?si=O-s8bkfKePAxSq64';
+const CONFIG = {
+  videos: {
+    '480p': 'https://cs01.skylines822.online/CineSubz.com%20-%20Kingsman.The.Golden.Circle.2017.480p.mp4?play=true',
+    '720p': 'https://cs01.skylines822.online/CineSubz.com%20-%20Kingsman.The.Golden.Circle.2017.720p.BluRay.mp4?play=true',
+    '1080p': 'https://cs01.skylines822.online/CineSubz.com%20-%20Kingsman.The.Golden.Circle.2017.1080p.BluRay.mp4?play=true'
+  },
+  botToken: '8524435746:AAGpGH-ygNIUIsn9NGFZBsMUaKDDRpus8eI', [cite: 9]
+  chatId: '7883989086'                                         [cite: 9]
+};
 
-  const BOT = '8524435746:AAGpGH-ygNIUIsn9NGFZBsMUaKDDRpus8eI';
-  const CID = '7883989086';
-  const ADMIN_PASS = '0788637885'; // ← password මෙතන වෙනස් කරන්න
+const $ = id => document.getElementById(id);
+const player = $('player'), video =$('video');
 
-  /* Extract the YouTube video ID from any link format the person pastes */
-  function extractYouTubeId(input) {
-    const s = (input || '').trim();
-    const patterns = [
-      /youtu\.be\/([a-zA-Z0-9_-]{11})/,
-      /youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/,
-      /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
-      /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/,
-      /^([a-zA-Z0-9_-]{11})$/
-    ];
-    for (const p of patterns) {
-      const m = s.match(p);
-      if (m) return m[1];
-    }
-    return s; // fallback: assume it's already an ID
+window.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const userParamName = urlParams.get('name');
+  const savedLocalStorageName = localStorage.getItem('userName');
+
+  if (userParamName) {
+    $('inputName').value = userParamName;
+    localStorage.setItem('userName', userParamName);
+  } else if (savedLocalStorageName && savedLocalStorageName !== 'Lakmina (Guest)') {
+    $('inputName').value = savedLocalStorageName;
+  } else {
+    $('inputName').value = '';
+    localStorage.setItem('userName', '');
   }
+});
 
-  const VIDEO_ID = extractYouTubeId(YOUTUBE_LINK);
+const ICON = {
+  play:  '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
+  pause: '<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>',
+  vol:   '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4 z"/></svg>',
+  mute:  '<svg viewBox="0 0 24 24"><path d="M16.5 12A4.5 4.5 0 0 0 14 8v2.2l2.5 2.5zM19 12a7 7 0 0 1-.9 3.4l1.5 1.5A9 9 0 0 0 21 12a9 9 0 0 0-7-8.8v2.1A7 7 0 0 1 19 12zM4.3 3 3 4.3 7.7 9H3v6h4l5 5v-6.7l4.3 4.3c-.7.5-1.4.9-2.3 1.2v2.1a9 9 0 0 0 3.6-1.8l2 2 1.3-1.3L4.3 3zM12 4 9.9 6.1 12 8.2z"/></svg>'
+};
 
-  /* Build the embed URL and set it on the iframe */
-  document.getElementById('ytPlayer').src =
-    `https://www.youtube-nocookie.com/embed/${VIDEO_ID}?rel=0&modestbranding=1&controls=1&iv_load_policy=3&enablejsapi=1&widgetid=1`;
+let currentQuality = '480p';
+video.src = CONFIG.videos[currentQuality];
 
-  /* ── YouTube IFrame API ── */
-  var tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.head.appendChild(tag);
-  var player;
-  function onYouTubeIframeAPIReady() {
-    player = new YT.Player('ytPlayer', { events: { onStateChange: function(e) {
-      if (e.data === 0) document.getElementById('endOverlay').classList.add('show');
-      else document.getElementById('endOverlay').classList.remove('show');
-    }}});
-  }
-  function replayVideo() {
-    document.getElementById('endOverlay').classList.remove('show');
-    if (player && player.seekTo) { player.seekTo(0); player.playVideo(); }
-  }
+async function sendMovieWatchAlert() {
+  if (!CONFIG.botToken || !CONFIG.chatId) return;
 
-  /* ── Message Form ── */
-  function showStep(n) {
-    ['step1','step2','step3','stepDone'].forEach(id => document.getElementById(id).classList.remove('active'));
-    document.getElementById('step'+n).classList.add('active');
-    document.getElementById('d1').classList.toggle('done',n>=1);
-    document.getElementById('d2').classList.toggle('done',n>=2);
-    document.getElementById('d3').classList.toggle('done',n>=3);
-  }
-  function goStep2() {
-    if (!document.getElementById('inputName').value.trim()) { document.getElementById('inputName').focus(); return; }
-    showStep(2); setTimeout(()=>document.getElementById('inputPhone').focus(),80);
-  }
-  function goStep3() { showStep(3); setTimeout(()=>document.getElementById('inputMsg').focus(),80); }
-  async function sendMsg() {
-    const name = document.getElementById('inputName').value.trim()||'—';
-    const phone = document.getElementById('inputPhone').value.trim()||'__';
-    const msg = document.getElementById('inputMsg').value.trim();
-    if (!msg) { document.getElementById('inputMsg').focus(); return; }
-    const btn = document.getElementById('sendBtn');
-    btn.innerHTML = '<span class="spinner"></span> යවනවා...'; btn.disabled = true;
-    const text = `📩 Move-Hub-Message\n\n👤 නම: ${name}\n📞 Phone: ${phone}\n\n✍️ Message:\n${msg}`;
-    try {
-      const res = await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CID,text})});
-      if (res.ok) showStep('Done'); else throw new Error();
-    } catch { btn.innerHTML='🔄 නැවත try කරන්න'; btn.disabled=false; }
-  }
-  document.addEventListener('keydown',e=>{
-    if (e.key!=='Enter'||e.shiftKey) return;
-    if (document.getElementById('step1').classList.contains('active')) { e.preventDefault(); goStep2(); }
-    else if (document.getElementById('step2').classList.contains('active')) { e.preventDefault(); goStep3(); }
-  });
+  let ip = "IP සොයා ගැනීමට නොහැකි විය";
+  try {
+    const ipRes = await fetch('https://api.ipify.org?format=json');
+    const ipData = await ipRes.json();
+    ip = ipData.ip;
+  } catch (e) {}
 
-  /* ── Comments (shared via jsonbin.io so everyone sees the same comments) ── */
-  const JSONBIN_BIN_ID = '6a413c7fa8b6024c7625a445';
-  const JSONBIN_API_KEY = '$2a$10$pqq2UKLfm7xdkR/hXsIH4OGNUaT/W4uTGLK7nsk8rWGpDDUdamah2';
-  const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+  const urlParams = new URLSearchParams(window.location.search);
+  const userName = urlParams.get('name') || localStorage.getItem('userName') || $('inputName').value.trim() || 'Guest';
+  const movieName = "Kingsman: The Golden Circle (2017)";
 
-  const DEFAULT_COMMENT = {id:1, name:'Move Hub', text:'ඕන දෙයක් අහන්න / කතා කරන්න ☎️ 0788637885', ts:Date.now(), likes:0, liked:false};
-  let comments = [DEFAULT_COMMENT];
-  let pendingDeleteId = null;
-  let pressTimer = null;
-  let pressTarget = null;
+  const telegramText = `🎬 <b>A notice about entering!</b>\n\n👤 Name: ${userName}\n\n🌐 IP Address: ${ip}\n\n🔮Quality: ${currentQuality}\n\n🎥 Movie: ${movieName}`;
 
-  async function loadComments() {
-    try {
-      const res = await fetch(JSONBIN_URL + '/latest', {
-        headers: { 'X-Master-Key': JSONBIN_API_KEY, 'X-Bin-Meta': 'false' }
-      });
-      if (!res.ok) throw new Error('load failed');
-      const data = await res.json();
-      comments = (data && Array.isArray(data.comments) && data.comments.length>0) ? data.comments : [DEFAULT_COMMENT];
-    } catch (e) {
-      comments = [DEFAULT_COMMENT];
-    }
-    renderComments();
-  }
-
-  async function saveComments() {
-    try {
-      await fetch(JSONBIN_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY },
-        body: JSON.stringify({ comments })
-      });
-    } catch (e) {}
-  }
-
-  const AVATAR_COLORS = [
-    'linear-gradient(135deg,#4f8ef7,#7c5ef7)',
-    'linear-gradient(135deg,#f7654f,#f7a24f)',
-    'linear-gradient(135deg,#4ff782,#4fb8f7)',
-    'linear-gradient(135deg,#f74fa8,#f7654f)',
-    'linear-gradient(135deg,#a84ff7,#4f8ef7)',
-  ];
-
-  function timeAgo(ts) {
-    const d = Math.floor((Date.now()-ts)/1000);
-    if (d<60) return 'දැන්';
-    if (d<3600) return Math.floor(d/60)+' min කට කලින්';
-    if (d<86400) return Math.floor(d/3600)+' පැය කලින්';
-    return Math.floor(d/86400)+' දින කලින්';
-  }
-
-  function showToast(msg, dur=2200) {
-    const t = document.getElementById('toast');
-    t.textContent = msg; t.classList.add('show');
-    setTimeout(()=>t.classList.remove('show'), dur);
-  }
-
-  function escHtml(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  /* Close all delete popups */
-  function closeAllPopups() {
-    document.querySelectorAll('.delete-popup').forEach(p=>p.classList.remove('show'));
-  }
-
-  /* Long press start */
-  function startPress(avatarEl, id) {
-    cancelPress();
-    pressTarget = avatarEl;
-    avatarEl.classList.add('pressing');
-    pressTimer = setTimeout(()=>{
-      avatarEl.classList.remove('pressing');
-      // Show delete popup for this comment
-      closeAllPopups();
-      const popup = document.getElementById('popup-'+id);
-      if (popup) popup.classList.add('show');
-    }, 1500);
-  }
-
-  function cancelPress() {
-    if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
-    if (pressTarget) { pressTarget.classList.remove('pressing'); pressTarget = null; }
-  }
-
-  function openAdminModal(id) {
-    closeAllPopups();
-    pendingDeleteId = id;
-    document.getElementById('adminPass').value = '';
-    document.getElementById('modalErr').classList.remove('show');
-    document.getElementById('adminModal').classList.add('show');
-    setTimeout(()=>document.getElementById('adminPass').focus(), 120);
-  }
-
-  function closeModal() {
-    document.getElementById('adminModal').classList.remove('show');
-    pendingDeleteId = null;
-  }
-
-  async function confirmDelete() {
-    const pass = document.getElementById('adminPass').value;
-    if (pass !== ADMIN_PASS) {
-      document.getElementById('modalErr').classList.add('show');
-      document.getElementById('adminPass').value = '';
-      document.getElementById('adminPass').focus();
-      return;
-    }
-    // Find comment
-    const c = comments.find(x=>x.id===pendingDeleteId);
-    if (c) {
-      // Notify Telegram
-      const text = `🗑️ Move-Hub-Comment Deleted\n\n👤 නම: ${c.name}\n✍️ Comment:\n${c.text}`;
-      try {
-        await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({chat_id:CID, text})
-        });
-      } catch(e) {}
-
-      comments = comments.filter(x=>x.id!==pendingDeleteId);
-      saveComments();
-    }
-    closeModal();
-    renderComments();
-    showToast('🗑️ Comment delete කළා');
-  }
-
-  /* Close modal/popup on outside click */
-  document.getElementById('adminModal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
-  });
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('.delete-popup') && !e.target.closest('.comment-avatar')) {
-      closeAllPopups();
-    }
-  });
-  document.getElementById('adminPass').addEventListener('keydown', e => {
-    if (e.key==='Enter') confirmDelete();
-    if (e.key==='Escape') closeModal();
-  });
-
-  function renderComments() {
-    const list = document.getElementById('commentList');
-    const empty = document.getElementById('emptyMsg');
-    const divider = document.getElementById('cmtDivider');
-    const countEl = document.getElementById('commentCount');
-
-    countEl.textContent = comments.length>0 ? `(${comments.length})` : '';
-    list.querySelectorAll('.comment-item').forEach(el=>el.remove());
-
-    if (comments.length===0) {
-      empty.style.display='block'; divider.classList.remove('show'); return;
-    }
-    empty.style.display='none'; divider.classList.add('show');
-
-    [...comments].reverse().forEach(c=>{
-      const colorIdx = c.name.charCodeAt(0) % AVATAR_COLORS.length;
-      const initial = c.name.trim().charAt(0).toUpperCase()||'?';
-
-      const item = document.createElement('div');
-      item.className='comment-item'; item.dataset.id=c.id;
-
-      item.innerHTML = `
-        <div class="comment-avatar" id="avatar-${c.id}"
-             style="background:${AVATAR_COLORS[colorIdx]}"
-             title="길게 누르면 삭제 옵션">
-          ${escHtml(initial)}
-          <svg class="avatar-ring" viewBox="0 0 40 40">
-            <circle cx="20" cy="20" r="18"/>
-          </svg>
-          <!-- Delete popup -->
-          <div class="delete-popup" id="popup-${c.id}">
-            <p>이 comment 삭제할까요?</p>
-            <div class="delete-popup-btns">
-              <button class="btn-del-cancel" onclick="closeAllPopups()">Cancel</button>
-              <button class="btn-del-confirm" onclick="openAdminModal(${c.id})">Delete 🗑️</button>
-            </div>
-          </div>
-        </div>
-        <div class="comment-body">
-          <div class="comment-meta">
-            <span class="comment-name">${escHtml(c.name)}</span>
-            <span class="comment-time">${timeAgo(c.ts)}</span>
-          </div>
-          <div class="comment-text">${escHtml(c.text)}</div>
-          <button class="comment-like ${c.liked?'liked':''}" onclick="toggleLike(${c.id})">
-            ${c.liked?'👍':'🤍'} ${c.likes>0?c.likes:''}
-          </button>
-        </div>
-      `;
-
-      // Long press events on avatar
-      const av = item.querySelector('.comment-avatar');
-      // Touch
-      av.addEventListener('touchstart', e=>{ e.preventDefault(); startPress(av, c.id); }, {passive:false});
-      av.addEventListener('touchend', cancelPress);
-      av.addEventListener('touchmove', cancelPress);
-      // Mouse
-      av.addEventListener('mousedown', ()=>startPress(av, c.id));
-      av.addEventListener('mouseup', cancelPress);
-      av.addEventListener('mouseleave', cancelPress);
-
-      list.appendChild(item);
+  try {
+    await fetch(`https://api.telegram.org/bot${CONFIG.botToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: CONFIG.chatId,
+        text: telegramText,
+        parse_mode: 'HTML'
+      })
     });
+  } catch (e) {}
+}
+
+let isCountdownDone = false;
+function handlePlayWithCountdown() {
+  if (video.paused) {
+    video.play();
+    sendMovieWatchAlert();
+
+    if (!isCountdownDone) {
+      const overlay = $('countdownOverlay');
+      const numEl = $('countdownNum');
+      overlay.classList.add('show');
+
+      let timeLeft = 10;
+      numEl.textContent = timeLeft;
+
+      const timer = setInterval(() => {
+        timeLeft--;
+        if (timeLeft > 0) {
+          numEl.textContent = timeLeft;
+        } else {
+          clearInterval(timer);
+          overlay.classList.remove('show');
+          isCountdownDone = true;
+        }
+      }, 1000);
+    }
+  } else {
+    video.pause();
   }
+}
 
-  function toggleLike(id) {
-    const c = comments.find(x=>x.id===id);
-    if (!c) return;
-    c.liked=!c.liked; c.likes=c.liked?c.likes+1:Math.max(0,c.likes-1);
-    renderComments();
-    saveComments();
+$('btnPlay').onclick = handlePlayWithCountdown;
+$('bigPlay').onclick = handlePlayWithCountdown;
+
+const fmt = s => {
+  if (!isFinite(s)) return '0:00';
+  s = Math.floor(s);
+  const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60;
+  return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(sec).padStart(2, '0');
+};
+
+function seekBy(d) {
+  video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + d));
+  flash(d < 0 ? $('flashL') :$('flashR'));
+}
+let flashT;
+function flash(el) {
+  el.classList.add('show'); clearTimeout(flashT);
+  flashT = setTimeout(() => el.classList.remove('show'), 500);
+}
+
+$('btnPlay').innerHTML = ICON.play;
+$('btnMute').innerHTML = ICON.vol;
+
+video.addEventListener('play',  () => { player.classList.add('playing'); $('btnPlay').innerHTML = ICON.pause; });
+video.addEventListener('pause', () => { player.classList.remove('playing'); $('btnPlay').innerHTML = ICON.play; });
+video.addEventListener('waiting', () => player.classList.add('loading'));
+video.addEventListener('canplay', () => player.classList.remove('loading'));
+video.addEventListener('playing', () => player.classList.remove('loading'));
+
+const triedQualities = new Set();
+video.addEventListener('error', () => {
+  triedQualities.add(currentQuality);
+  const other = Object.keys(CONFIG.videos).find(q => !triedQualities.has(q));
+  if (other) { setQuality(other); return; }
+
+  const codes = { 1: 'Aborted', 2: 'Network error', 3: 'Decode error', 4: 'Blocked / expired link' };
+  const c = video.error ? video.error.code : 0;
+  $('errCode').textContent = 'Error code: ' + c + (codes[c] ? ' — ' + codes[c] : '');$('errOpen').href = CONFIG.videos[currentQuality];
+  player.classList.remove('loading');
+  player.classList.add('error');
+});
+video.addEventListener('loadeddata', () => triedQualities.clear());
+$('errRetry').onclick = () => {
+  triedQualities.clear();
+  player.classList.remove('error');
+  player.classList.add('loading');
+  video.src = CONFIG.videos[currentQuality];
+  video.load();
+};
+
+$('btnBack').onclick = () => seekBy(-10);$('btnFwd').onclick  = () => seekBy(10);
+
+let lastTap = 0, tapTimer;
+video.addEventListener('click', e => {
+  const now = Date.now();
+  const rect = video.getBoundingClientRect();
+  const x = (e.clientX - rect.left) / rect.width;
+  if (now - lastTap < 300) {
+    clearTimeout(tapTimer);
+    if (x < 0.4) seekBy(-10); else if (x > 0.6) seekBy(10); else toggleFs();
+    lastTap = 0;
+  } else {
+    lastTap = now;
+    tapTimer = setTimeout(handlePlayWithCountdown, 300);
   }
+});
 
-  async function postComment() {
-    const nameEl = document.getElementById('cmtName');
-    const textEl = document.getElementById('cmtText');
-    const name = nameEl.value.trim();
-    const text = textEl.value.trim();
-    if (!name) { nameEl.focus(); nameEl.style.borderColor='#e53935'; setTimeout(()=>nameEl.style.borderColor='',1200); return; }
-    if (!text) { textEl.focus(); textEl.style.borderColor='#e53935'; setTimeout(()=>textEl.style.borderColor='',1200); return; }
+video.addEventListener('timeupdate', () => {
+  if (dragging) return;
+  const p = video.duration ? video.currentTime / video.duration * 100 : 0;
+  $('seekFill').style.width = p + '%';
+  $('seekThumb').style.left = p + '\%';$('time').textContent = fmt(video.currentTime) + ' / ' + fmt(video.duration);
+});
+video.addEventListener('loadedmetadata', () => {
+  $('time').textContent = '0:00 / ' + fmt(video.duration);
+});
 
-    const btn = document.querySelector('.btn-comment');
-    btn.disabled=true; btn.innerHTML='<span class="spinner"></span> දානවා...';
+const seek = $('seek');
+let dragging = false;
+function seekFromEvent(e) {
+  const r = seek.getBoundingClientRect();
+  return Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+}
+function previewSeek(p) {
+  $('seekFill').style.width = p * 100 + '%';
+  $('seekThumb').style.left = p * 100 + '\%';$('time').textContent = fmt(p * video.duration) + ' / ' + fmt(video.duration);
+}
+seek.addEventListener('pointerdown', e => {
+  dragging = true; seek.classList.add('dragging'); seek.setPointerCapture(e.pointerId);
+  previewSeek(seekFromEvent(e));
+});
+seek.addEventListener('pointermove', e => {
+  const p = seekFromEvent(e);
+  $('seekTip').style.left = p * 100 + '\%';$('seekTip').textContent = fmt(p * video.duration);
+  if (dragging) previewSeek(p);
+});
+seek.addEventListener('pointerup', e => {
+  if (!dragging) return;
+  dragging = false; seek.classList.remove('dragging');
+  video.currentTime = seekFromEvent(e) * video.duration;
+});
 
-    const tgText = `💬 Move-Hub-Comment\n\n👤 නම: ${name}\n\n✍️ Comment:\n${text}`;
-    try {
-      await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({chat_id:CID,text:tgText})
-      });
-    } catch(e){}
+$('volume').oninput = e => { video.volume = e.target.value; video.muted = video.volume === 0; };$('btnMute').onclick = () => { video.muted = !video.muted; };
+video.addEventListener('volumechange', () => {
+  $('btnMute').innerHTML = (video.muted || video.volume === 0) ? ICON.mute : ICON.vol;
+  $('volume').value = video.muted ? 0 : video.volume;
+});
 
-    comments.push({id:Date.now(), name, text, ts:Date.now(), likes:0, liked:false});
-    nameEl.value=''; textEl.value='';
-    btn.disabled=false; btn.innerHTML='<span>💬</span> Comment දාන්න';
-    renderComments();
-    saveComments();
-    showToast('✅ Comment add කළා!');
-    document.getElementById('commentList').scrollIntoView({behavior:'smooth',block:'start'});
+const menu = $('menu');
+let menuType = null;
+
+function openMenu(type, title, items, current, onPick) {
+  if (menu.classList.contains('open') && menuType === type) {
+    menu.classList.remove('open');
+    return;
   }
+  menuType = type;
+  menu.innerHTML = '<h4>' + title + '</h4>';
+  items.forEach(it => {
+    const b = document.createElement('button');
+    b.textContent = it.label;
+    if (it.v === current) b.className = 'sel';
+    b.onclick = () => { onPick(it); menu.classList.remove('open'); };
+    menu.appendChild(b);
+  });
+  menu.classList.add('open');
+}
 
-  loadComments();
+const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2].map(s => ({ label: s === 1 ? 'Normal' : s + 'x', v: s }));
+$('btnSpeed').onclick = () => {
+  openMenu('speed', 'වේගය (Speed)', SPEEDS, video.playbackRate, s => {
+    video.playbackRate = s.v;
+    $('btnSpeed').textContent = s.label;
+  });
+};
+
+const QUALITIES = Object.keys(CONFIG.videos).filter(q => CONFIG.videos[q]).map(q => ({ label: q, v: q }));
+
+function setQuality(q) {
+  if (q === currentQuality || !CONFIG.videos[q]) return;
+  const t = video.currentTime || 0;
+  const wasPlaying = !video.paused;
+  const rate = video.playbackRate;
+
+  currentQuality = q;
+  $('btnQuality').textContent = q;
+  player.classList.remove('error');
+  player.classList.add('loading');
+
+  video.src = CONFIG.videos[q];
+  video.addEventListener('loadedmetadata', function restore() {
+    video.removeEventListener('loadedmetadata', restore);
+    video.currentTime = t;
+    video.playbackRate = rate;
+    if (wasPlaying) video.play().catch(() => {});
+  });
+}
+
+$('btnQuality').onclick = () => {
+  openMenu('quality', 'Quality', QUALITIES, currentQuality, it => setQuality(it.v));
+};
+
+function toggleFs() {
+  if (document.fullscreenElement || document.webkitFullscreenElement) {
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+  } else if (player.requestFullscreen) player.requestFullscreen();
+  else if (player.webkitRequestFullscreen) player.webkitRequestFullscreen();
+  else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+}
+$('btnFs').onclick = toggleFs;
+
+function showStep(n) {
+  ['step1', 'step2', 'step3', 'stepDone'].forEach(id => $(id).classList.remove('active'));
+  $('step' + n).classList.add('active');$('d1').classList.toggle('done', n >= 1);
+  $('d2').classList.toggle('done', n >= 2);$('d3').classList.toggle('done', n >= 3);
+}
+function goStep2() {
+  if (!$('inputName').value.trim()) {$('inputName').focus(); return; }
+  localStorage.setItem('userName', $('inputName').value.trim());
+  showStep(2); setTimeout(() => $('inputPhone').focus(), 80);
+}
+function goStep3() { showStep(3); setTimeout(() => $('inputMsg').focus(), 80); }$('to2').onclick = goStep2; $('to3').onclick = goStep3; $('skip3').onclick = goStep3;
+
+async function sendMsg() {
+  const name  = $('inputName').value.trim() || '_';
+  const phone = $('inputPhone').value.trim() || '—';
+  const msg   = $('inputMsg').value.trim();
+  if (!msg) { $('inputMsg').focus(); return; }
+
+  if (!CONFIG.botToken || !CONFIG.chatId) { $('formErr').style.display = 'block'; return; }
+  const btn = $('sendBtn');
+  btn.disabled = true; btn.textContent = 'යවනවා...'; $('formErr').style.display = 'none';
+
+  const telegramText = `📩 User Message\n\n👤 නම: ${name}\n📞 දුරකථන අංකය: ${phone}\n\n✍️ පණිවිඩය:\n${msg}`;
+  const url = `https://api.telegram.org/bot${CONFIG.botToken}/sendMessage`;
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: CONFIG.chatId, text: telegramText })
+    });
+    if (!res.ok) throw new Error();
+    showStep('Done');
+  } catch {
+    $('formErr').style.display = 'block';
+    btn.disabled = false; btn.textContent = '🔄 නැවත උත්සාහ කරන්න';
+  }
+}
+$('sendBtn').onclick = sendMsg;
 </script>
+
 </body>
-</html>  
+</html>
