@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <!-- Video server eka oyage site eke address eka block karanna nisa, referrer eka yawanne na -->
 <meta name="referrer" content="no-referrer">
-<title>Moana (2026) Sinhala Subtitles - Lakmina King👑️</title>
+<title>The Guardians (2017) Sinhala Subtitles - Lakmina King👑️</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
@@ -388,17 +388,16 @@
   </div>
 </div>
 
-
-
 <script>
 const CONFIG = {
+  movieName: 'Kingsman: The Golden Circle',
+  botToken: '8524435746:AAGpGH-ygNIUIsn9NGFZBsMUaKDDRpus8eI',
+  chatId: '7883989086',
   videos: {
      '480p': 'https://cs01.skylines822.online/CineSubz.com%20-%20Kingsman.The.Golden.Circle.2017.480p.mp4?play=true',
-    '720p': 'https://cs01.skylines822.online/CineSubz.com%20-%20Kingsman.The.Golden.Circle.2017.720p.BluRay.mp4?play=true',
-    '1080p': 'https://cs01.skylines822.online/CineSubz.com%20-%20Kingsman.The.Golden.Circle.2017.1080p.BluRay.mp4?play=true'
+    '720p': 'https://cs01.skylines822.online/CineSubz.com%20-%20Kingsman.The.Golden.Circle.2017.720p.mp4?play=true',
+    '1080p': 'https://cs01.skylines822.online/CineSubz.com%20-%20Kingsman.The.Golden.Circle.2017.1080p.mp4?play=true'
 };
-  botToken: '',   // Telegram bot token (client-side eke danna epa; server eken yawanna)
-  chatId: ''
 };
 
 const $ = id => document.getElementById(id);
@@ -444,7 +443,7 @@ async function sendMovieWatchAlert() {
 
   const urlParams = new URLSearchParams(window.location.search);
   const userName = urlParams.get('name') || localStorage.getItem('userName') || $('inputName').value.trim() || '';
-  const movieName = "Kingsman: The Golden Circle";
+  const movieName = CONFIG.movieName;
 
   const telegramText = `🎬 <b>ප්‍රවේශ වීම පිළිබඳ දැනුම්දීමක්!</b>\n\n👤 පරිශීලක නම: ${userName}\n🌐 IP ලිපිනය: ${ip}\n🎥 නරඹන චිත්‍රපටය: ${movieName}`;
 
@@ -519,17 +518,16 @@ video.addEventListener('pause', () => { player.classList.remove('playing'); $('b
 video.addEventListener('waiting', () => player.classList.add('loading'));
 video.addEventListener('canplay', () => player.classList.remove('loading'));
 video.addEventListener('playing', () => player.classList.remove('loading'));
+
 const triedQualities = new Set();
 video.addEventListener('error', () => {
   triedQualities.add(currentQuality);
-  // Try the other quality once before showing the error
-  const other = Object.keys(CONFIG.videos).find(q => !triedQualities.has(q));
+  const other = Object.keys(CONFIG.videos).find(q => CONFIG.videos[q] && !triedQualities.has(q));
   if (other) { setQuality(other); return; }
 
   const codes = { 1: 'Aborted', 2: 'Network error (server/link)', 3: 'Decode error (file kadila)', 4: 'Blocked / expired link / not a video' };
   const c = video.error ? video.error.code : 0;
-  $('errCode').textContent = 'Error code: ' + c + (codes[c] ? ' — ' + codes[c] : '');
-  $('errOpen').href = CONFIG.videos[currentQuality];
+  $('errCode').textContent = 'Error code: ' + c + (codes[c] ? ' — ' + codes[c] : '');$('errOpen').href = CONFIG.videos[currentQuality];
   player.classList.remove('loading');
   player.classList.add('error');
 });
@@ -600,7 +598,7 @@ video.addEventListener('volumechange', () => {
   $('volume').value = video.muted ? 0 : video.volume;
 });
 
-/* ===== Menus (Speed + Quality share one popup) ===== */
+/* ===== Menus ===== */
 const menu = $('menu');
 let menuType = null;
 
@@ -630,7 +628,7 @@ $('btnSpeed').onclick = () => {
   });
 };
 
-/* Quality: keeps the current time and play/pause state */
+/* Quality */
 const QUALITIES = Object.keys(CONFIG.videos).filter(q => CONFIG.videos[q]).map(q => ({ label: q, v: q }));
 
 function setQuality(q) {
