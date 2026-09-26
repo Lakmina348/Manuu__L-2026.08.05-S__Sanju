@@ -4,7 +4,245 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lakmina Cinema | Ultra Premium</title>
-    <link rel="stylesheet" href="home1.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Poppins', sans-serif; 
+        }
+        
+        body { 
+            background: #1a1d29; 
+            color: white; 
+            overflow-x: hidden; 
+        }
+
+        /* Side Label */
+        .side-label {
+            position: fixed; 
+            right: -45px; 
+            top: 50%; 
+            transform: rotate(90deg);
+            font-size: 10px; 
+            color: #555; 
+            letter-spacing: 3px; 
+            z-index: 100;
+        }
+
+        /* Header */
+        .header {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 20px 6%; 
+            position: absolute; 
+            width: 100%; 
+            z-index: 100;
+        }
+        .nav-left {
+            display: flex;
+            gap: 10px;
+        }
+        .user-btn { 
+            background: #007bff; 
+            padding: 6px 15px; 
+            border-radius: 20px; 
+            font-size: 11px; 
+            cursor: pointer; 
+            color: white;
+            text-decoration: none;
+            border: none;
+        }
+        .search-btn { 
+            background: rgba(255,255,255,0.1); 
+            padding: 6px 15px; 
+            border-radius: 20px; 
+            font-size: 11px; 
+            margin-left: 10px; 
+        }
+        .logo { 
+            font-weight: 800; 
+            font-size: 22px; 
+            color: #e50914; 
+        }
+        .logo span { 
+            color: white; 
+        }
+
+        /* Hero Section */
+        .hero-slider {
+            height: 65vh; 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-end;
+            padding: 0 8%; 
+            background: linear-gradient(to top, #1a1d29, transparent);
+        }
+        .hero-bg { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            z-index: -1; 
+            opacity: 0.5; 
+        }
+        .hero-content { 
+            text-align: right; 
+            max-width: 500px; 
+            z-index: 5; 
+        }
+        .hero-content h1 { 
+            font-size: clamp(28px, 6vw, 45px); 
+            margin: 10px 0; 
+            font-weight: 700; 
+        }
+        .age-tag { 
+            background: #ffc107; 
+            color: black; 
+            padding: 2px 10px; 
+            border-radius: 5px; 
+            font-weight: bold; 
+            font-size: 12px; 
+        }
+        .btn-watch { 
+            background: #007bff; 
+            border: none; 
+            color: white; 
+            padding: 12px 35px; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            font-weight: bold; 
+        }
+
+        /* Grid */
+        .main-body { 
+            padding: 0 6%; 
+            margin-top: -40px; 
+        }
+        .section-title-bar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 25px; 
+        }
+        .section-title-bar h2 { 
+            font-size: 18px; 
+            border-right: 4px solid #e50914; 
+            padding-right: 12px; 
+        }
+        .view-more { 
+            color: #888; 
+            text-decoration: none; 
+            font-size: 12px; 
+        }
+
+        .movie-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 15px; 
+        }
+        .movie-card { 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        .card-img { 
+            position: relative; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            aspect-ratio: 2/3; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
+            border: 1px solid rgba(255,255,255,0.1); 
+        }
+        .card-img img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+        .rating-tag { 
+            position: absolute; 
+            top: 10px; 
+            left: 10px; 
+            background: rgba(0,0,0,0.7); 
+            color: #4CAF50; 
+            padding: 2px 8px; 
+            border-radius: 5px; 
+            font-size: 11px; 
+            border: 1px solid #4CAF50; 
+        }
+        .movie-card h3 { 
+            font-size: 12px; 
+            margin-top: 10px; 
+            text-align: center; 
+            font-weight: 600; 
+        }
+        .genre { 
+            font-size: 9px; 
+            text-align: center; 
+            color: #777; 
+            margin-top: 2px; 
+        }
+
+        /* Middle Promo Banner */
+        .promo-banner {
+            margin: 50px 0; 
+            background: #e50914; 
+            border-radius: 25px; 
+            height: 180px;
+            display: flex; 
+            align-items: center; 
+            position: relative; 
+            overflow: hidden; 
+            cursor: pointer;
+        }
+        .promo-info { 
+            padding-left: 30px; 
+            z-index: 5; 
+        }
+        .imdb { 
+            background: #ffc107; 
+            color: black; 
+            font-size: 10px; 
+            padding: 2px 10px; 
+            border-radius: 5px; 
+            font-weight: bold; 
+        }
+        .btn-details { 
+            background: rgba(255,255,255,0.2); 
+            border: 1px solid white; 
+            color: white; 
+            padding: 8px 25px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            margin-top: 15px; 
+            font-size: 11px; 
+        }
+        .promo-img { 
+            position: absolute; 
+            right: 0; 
+            height: 100%; 
+            z-index: 1; 
+        }
+
+        /* Responsive For PC */
+        @media (min-width: 900px) {
+            .movie-grid { 
+                grid-template-columns: repeat(6, 1fr); 
+                gap: 25px; 
+            }
+            .hero-slider { 
+                height: 75vh; 
+            }
+            .promo-banner { 
+                height: 280px; 
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -12,7 +250,9 @@
 
     <header class="header">
         <div class="nav-left">
-            <span class="user-btn" onclick="location.href='../Admin/index.html'" style="cursor: pointer;">Admin🔑</span>
+            <button class="user-btn" onclick="location.href='../Admin/index.html'">𝔸𝕕𝕞𝕚𝕟🔑</button>
+            <a href="../index.html" target="_blank" class="user-btn" style="background:#17a2b8;">✌︎㋡ -Ｈｏｍｅ</a>
+            <a href="Key.html" class="user-btn" style="background:#9011ca;">𝐋𝐨𝐠𝐢𝐧𓇼 ⋆.˚ 𓆉 𓆝 𓆡⋆.˚ 𓇼</a>
         </div>
         <div class="logo">LAKMINA<span></span></div>
     </header>
@@ -23,179 +263,192 @@
                 <span class="age-tag">+15</span>
                 <h1>2026 New Web</h1>
                 <p>ප්‍රියතම චිත්‍රපට සහ ටෙලි කතා මාලා දැන් සිංහල උපසිරැසි සමඟින් නරඹන්න.</p>
-                <button class="btn-watch" onclick="location.href='M1.html'">නරඹන්න</button>
+                <button class="btn-watch" onclick="handleNavigation('M1.html', 'M')">නරඹන්න</button>
             </div>
         </div>
-        <img src="https://lh3.googleusercontent.com/d/1vxHiTgghnhGa4hriPzarN5EuuY6DJubQ" class="hero-bg">
+        <img src="https://lh3.googleusercontent.com/d/1vxHiTgghnhGa4hriPzarN5EuuY6DJubQ" class="hero-bg" alt="Hero Background">
     </section>
 
     <main class="main-body">
         
         <div class="section-title-bar">
-            <a href="#" class="view-more">مشاهده بیشتر</a>
+            <a href="#" class="view-more">තවත් බලන්න</a>
             <h2>අලුත්ම චිත්‍රපට</h2>
         </div>
 
         <div class="movie-grid">
-            
 
-
-
-
-
-
-            
-            <div class="movie-card" onclick="location.href='Kingsman_The_Golden_Circle_(2017)/index.html'">
+            <div class="movie-card" onclick="handleNavigation('After_Ever_Happy_(2022)/index.html', '_M')">
                 <div class="card-img">
-                    <img src="https://cinesubz.net/wp-content/uploads/2021/10/34xBL6BXNYFqtHO9zhcgoakS4aP.jpg" alt="The Wonder">
-                    <span class="rating-tag">6.7</span>
+                    <img src="https://cinesubz.co/wp-content/uploads/2022/09/6b7swg6DLqXCO3XUsMnv6RwDMW2.jpg" alt="After Ever Happy">
+                    <span class="rating-tag">★ 8.4</span>
+                </div>
+                <h3>After Ever Happy (2022) Sinhala Subtitles | සත්‍ය හෙලිවීමෙන් පසු? [18+]</h3>
+                <p class="genre">_M</p>
+            </div>
+            
+            <div class="movie-card" onclick="handleNavigation('Kingsman_The_Golden_Circle_(2017)/index.html', 'L')">
+                <div class="card-img">
+                    <img src="https://cinesubz.net/wp-content/uploads/2021/10/34xBL6BXNYFqtHO9zhcgoakS4aP.jpg" alt="Kingsman The Golden Circle">
+                    <span class="rating-tag">★6.7</span>
                 </div>
                 <h3>Kingsman: The Golden Circle (2017) Sinhala Subtitle | සිංහල උපසිරැසි සමඟ</h3>
-                <p class="genre">_M</p>
+                <p class="genre">L</p>
             </div>
             
-            <div class="movie-card" onclick="location.href='Kingsman_The_Secret_Service_(2014)/index.html'">
+            <div class="movie-card" onclick="handleNavigation('Kingsman_The_Secret_Service_(2014)/index.html', 'L')">
                 <div class="card-img">
-                    <img src="https://cinesubz.net/wp-content/uploads/2021/10/ay7xwXn1G9fzX9TUBlkGA584rGi.jpg" alt="The Wonder">
-                    <span class="rating-tag">7.7</span>
+                    <img src="https://cinesubz.net/wp-content/uploads/2021/10/ay7xwXn1G9fzX9TUBlkGA584rGi.jpg" alt="Kingsman The Secret Service">
+                    <span class="rating-tag">★7.7</span>
                 </div>
                 <h3>Kingsman: The Secret Service (2014) Sinhala Subtitle | සිංහල උපසිරැසි සමඟ</h3>
-                <p class="genre">_M</p>
+                <p class="genre">L</p>
             </div>
 
-            <div class="movie-card" onclick="location.href='The_Guardians_(2017)/index.html'">
+            <div class="movie-card" onclick="handleNavigation('The_Guardians_(2017)/index.html', '001L')">
                 <div class="card-img">
-                    <img src="https://lh3.googleusercontent.com/d/1Bu5frcZ6PRzRjbM_YTNNkiJIFcyiegcB" alt="The Wonder">
-                    <span class="rating-tag">7.4</span>
+                    <img src="https://lh3.googleusercontent.com/d/1Bu5frcZ6PRzRjbM_YTNNkiJIFcyiegcB" alt="The Guardians">
+                    <span class="rating-tag">★7.4</span>
                 </div>
                 <h3>The Guardians (2017)</h3>
-                <p class="genre">001_M</p>
+                <p class="genre">001L</p>
             </div>
 
-            <div class="movie-card" onclick="location.href='The_Angry_Birds_Movie_(2016)/index.html'">
+            <div class="movie-card" onclick="handleNavigation('The_Angry_BirdsLovie_(2016)/index.html', '001L')">
                 <div class="card-img">
-                    <img src="https://lh3.googleusercontent.com/d/1Z4GZUAnq3giKkYQ2Rd3HHEK-VkwCXhEe" alt="The Wonder">
-                    <span class="rating-tag">8.5</span>
+                    <img src="https://lh3.googleusercontent.com/d/1Z4GZUAnq3giKkYQ2Rd3HHEK-VkwCXhEe" alt="The Angry Birds Movie">
+                    <span class="rating-tag">★8.5</span>
                 </div>
                 <h3>The Angry Birds Movie (2016)</h3>
-                <p class="genre">001_M</p>
+                <p class="genre">001L</p>
             </div>
 
-            <div class="movie-card" onclick="location.href='Chappie_(2015)/index.html'">
+            <div class="movie-card" onclick="handleNavigation('Chappie_(2015)/index.html', '001L')">
                 <div class="card-img">
-                    <img src="https://lh3.googleusercontent.com/d/1ycyIA41xbz1r4i2yZH_zBPQPVLbVxjhr" alt="Avengers">
-                    <span class="rating-tag">4.5</span>
+                    <img src="https://lh3.googleusercontent.com/d/1ycyIA41xbz1r4i2yZH_zBPQPVLbVxjhr" alt="Chappie">
+                    <span class="rating-tag">★4.5</span>
                 </div>
-                <h3>Chappie (2015) Sinhala Subtitles  සිංහල උපසිරැසි සමඟ</h3>
-                <p class="genre">001_M</p>
+                <h3>Chappie (2015) Sinhala Subtitles | සිංහල උපසිරැසි සමඟ</h3>
+                <p class="genre">001L</p>
             </div>
             
-            <div class="movie-card" onclick="location.href='Afterlight_(2025)/index.html'">
+            <div class="movie-card" onclick="handleNavigation('Afterlight_(2025)/index.html', '001L')">
                 <div class="card-img">
-                    <img src="https://lh3.googleusercontent.com/d/1piOX5Dql24ufijmep5xFIMsRN6varA79" alt="Avengers">
-                    <span class="rating-tag">3.7</span>
+                    <img src="https://lh3.googleusercontent.com/d/1piOX5Dql24ufijmep5xFIMsRN6varA79" alt="Afterlight">
+                    <span class="rating-tag">★3.7</span>
                 </div>
                 <h3>Afterlight (2025) Sinhala Subtitles | සිංහල උපසිරැසි සමඟ</h3>
-                <p class="genre">001_M</p>
+                <p class="genre">001L</p>
             </div>
 
-            <div class="movie-card" onclick="location.href='Killer_Whale_(2026)/index.html'">
+            <div class="movie-card" onclick="handleNavigation('Killer_Whale_(2026)/index.html', '001L')">
                 <div class="card-img">
-                    <img src="https://lh3.googleusercontent.com/d/1WmNmcUakzWF96bNxOlrIlLghj2rzKFIY" alt="Avengers">
-                    <span class="rating-tag">3.7</span>
+                    <img src="https://lh3.googleusercontent.com/d/1WmNmcUakzWF96bNxOlrIlLghj2rzKFIY" alt="Killer Whale">
+                    <span class="rating-tag">★3.7</span>
                 </div>
                 <h3>Killer Whale (2026) Sinhala Subtitles | සිංහල උපසිරැසි සමඟ</h3>
-                <p class="genre">001_M</p>
+                <p class="genre">001L</p>
             </div>
 
         </div>
 
-
-
-
-
-
-
-            <div class="promo-banner" onclick="location.href='../My%20Midiya/index.html'">
+        <div class="promo-banner" onclick="location.href='../My%20Midiya/index.html'">
             <div class="promo-info">
                 <span class="imdb">7.5 IMDB</span>
                 <h1>Contacts</h1>
                 <button class="btn-details">වැඩි විස්තර</button>
             </div>
-            <img src="https://lh3.googleusercontent.com/d/1T_NFTfe3376SEvqy6gvQN15bKpp4Djxu" class="promo-img">
+            <img src="https://lh3.googleusercontent.com/d/1T_NFTfe3376SEvqy6gvQN15bKpp4Djxu" class="promo-img" alt="Promo Image">
         </div>
 
         <div class="section-title-bar" style="margin-top: 40px;">
-            <a href="#" class="view-more">مشاهده بیشتر</a>
+            <a href="#" class="view-more">තවත් බලන්න</a>
             <h2>වැඩිපුරම නැරඹූ</h2>
         </div>
+
         <div class="movie-grid">
 
-
-
-
-
-
-
-
-        <div class="movie-card" onclick="location.href='Lukewarm_Why_The_Cross_2025/M1.html'">
+            <div class="movie-card" onclick="handleNavigation('Lukewarm_Why_The_Cross_2025/M1.html', '001L1.')">
                 <div class="card-img">
-                    <img src="https://lh3.googleusercontent.com/d/1P3JLzHX9SxvpaG-mGCQlji1fPEWwN9Gz" alt="Sarvam Maya">
-                    <span class="rating-tag">6.8</span>
+                    <img src="https://lh3.googleusercontent.com/d/1P3JLzHX9SxvpaG-mGCQlji1fPEWwN9Gz" alt="Lukewarm Why The Cross">
+                    <span class="rating-tag">★6.8</span>
                 </div>
                 <h3>Lukewarm Why The Cross 2025</h3>
-                <p class="genre">001_M1.</p>
+                <p class="genre">001L1.</p>
             </div>
 
-            <div class="movie-card" onclick="location.href='Autumn_And_The_Black_Jaguar_2024/M3.html'">
+            <div class="movie-card" onclick="handleNavigation('Autumn_And_The_Black_Jaguar_2024/M3.html', '001_ytL3')">
                 <div class="card-img">
-                    <img src="https://lh3.googleusercontent.com/d/1-q8Q9w4SLJaT391gxYUZEET1xXAGEXsB" alt="The Wonder">
-                    <span class="rating-tag">5.7</span>
+                    <img src="https://lh3.googleusercontent.com/d/1-q8Q9w4SLJaT391gxYUZEET1xXAGEXsB" alt="Autumn And The Black Jaguar">
+                    <span class="rating-tag">★5.7</span>
                 </div>
                 <h3>Autumn And The Black Jaguar 2024</h3>
-                <p class="genre">001_yt_M3</p>
+                <p class="genre">001_ytL3</p>
             </div>
 
-            <div class="movie-card" onclick="location.href='A_Military_Test_Turns_Ai_Combat_Robots_Against_Civilians/M8.html'">
+            <div class="movie-card" onclick="handleNavigation('ALilitary_Test_Turns_Ai_Combat_Robots_Against_Civilians/M8.html', '001_ytL8')">
                 <div class="card-img">
-                    <img src="https://lh3.googleusercontent.com/d/1YPF3kER8t08j5aRz6AmTdhz1Q1u5rTEi" alt="The Wonder">
-                    <span class="rating-tag">4.1</span>
+                    <img src="https://lh3.googleusercontent.com/d/1YPF3kER8t08j5aRz6AmTdhz1Q1u5rTEi" alt="A Military Test">
+                    <span class="rating-tag">★4.1</span>
                 </div>
                 <h3>A Military Test Turns Ai Combat Robots Against Civilians</h3>
-                <p class="genre">001_yt_M8</p>
+                <p class="genre">001_ytL8</p>
             </div>
 
-            <div class="movie-card" onclick="location.href='Zombie_Hell/M7.html'">
+            <div class="movie-card" onclick="handleNavigation('Zombie_Hell/M7.html', '001_ytL7')">
                 <div class="card-img">
-                    <img src="https://lh3.googleusercontent.com/d/1bD__-5CfIxH6uookUGd0TTIXEvqglHNp" alt="The Wonder">
-                    <span class="rating-tag">2.9</span>
+                    <img src="https://lh3.googleusercontent.com/d/1bD__-5CfIxH6uookUGd0TTIXEvqglHNp" alt="Zombie Hell">
+                    <span class="rating-tag">★2.9</span>
                 </div>
                 <h3>Zombie Hell</h3>
-                <p class="genre">001_yt_M7</p>
+                <p class="genre">001_ytL7</p>
             </div>
 
-            <div class="movie-card" onclick="location.href='Apocalypse_Disaster!_Mutant_Zombies_Overrun_a_Prison/M6.html'">
+            <div class="movie-card" onclick="handleNavigation('Apocalypse_Disaster!Lutant_Zombies_Overrun_a_Prison/M6.html', '001_ytL6')">
                 <div class="card-img">
-                    <img src="https://lh3.googleusercontent.com/d/1i5X5o-tcYkkvkPXw2GqMOG5bS18ZuRrT" alt="The Wonder">
-                    <span class="rating-tag">5.7</span>
+                    <img src="https://lh3.googleusercontent.com/d/1i5X5o-tcYkkvkPXw2GqMOG5bS18ZuRrT" alt="Apocalypse Disaster">
+                    <span class="rating-tag">★5.7</span>
                 </div>
                 <h3>Apocalypse Disaster! Mutant Zombies Overrun a Prison</h3>
-                <p class="genre">001_yt_M6</p>
+                <p class="genre">001_ytL6</p>
             </div>
 
-        
-
-
-
-
-
-
+        </div>
 
     </main>
 
-    <script src="home1.js"></script>
+    <script>
+        // කාණ්ඩයේ (Genre) 'M' අකුර තිබේදැයි පරීක්ෂා කර යොමු කිරීමේ ශ්‍රිතය
+        function handleNavigation(targetUrl, genreText) {
+            if (genreText && genreText.includes('M')) {
+                // 'M' අකුර තිබේ නම් Key.html පිටුවට යොමු වේ
+                window.location.href = 'Key.html';
+            } else {
+                // 'M' අකුර නොමැති නම් සෘජුවම අදාළ පිටුවට යොමු වේ
+                window.location.href = targetUrl;
+            }
+        }
+
+        // පිටුව පහළට ස්ක්‍රෝල් කිරීමේදී කාඩ්පත් පෙනී සිටීමේ සජීවීකරණය (Animation)
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.movie-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = "1";
+                        entry.target.style.transform = "translateY(0)";
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            cards.forEach(card => {
+                card.style.opacity = "0";
+                card.style.transform = "translateY(20px)";
+                card.style.transition = "0.5s ease-out";
+                observer.observe(card);
+            });
+        });
+    </script>
 </body>
-
 </html>
-
-

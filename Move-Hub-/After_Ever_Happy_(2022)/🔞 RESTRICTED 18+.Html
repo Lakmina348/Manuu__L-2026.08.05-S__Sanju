@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>18+ Restricted Access - Lakmina Cinema</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Noto+Sans+Sinhala:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #080305;
+            background-image: 
+                radial-gradient(circle at 50% 30%, rgba(255, 0, 85, 0.2) 0%, transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(0, 255, 204, 0.1) 0%, transparent 50%);
+            color: #ffffff;
+            font-family: 'Noto Sans Sinhala', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* 3D Glass Modal Overlay */
+        .modal-overlay {
+            width: 100%;
+            max-width: 550px;
+            background: rgba(18, 7, 12, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 0, 85, 0.4);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.9),
+                0 0 30px rgba(255, 0, 85, 0.3),
+                inset 0 0 15px rgba(255, 0, 85, 0.15);
+            text-align: center;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: fadeIn 0.8s cubic-bezier(0.1, 0.9, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Warning Badge */
+        .badge-18 {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff0055, #ff4757);
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 800;
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.8);
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 0, 85, 0.6);
+        }
+
+        .description {
+            font-size: 15px;
+            color: #d1d5db;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #ff0055;
+            text-align: left;
+        }
+
+        /* Button Container */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-accept {
+            background: linear-gradient(135deg, #ff0055, #ff2e93);
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.5);
+        }
+
+        .btn-accept:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(255, 0, 85, 0.9);
+            background: linear-gradient(135deg, #ff2e93, #ff0055);
+        }
+
+        .btn-deny {
+            background: rgba(255, 255, 255, 0.08);
+            color: #a1a1aa;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-deny:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        /* Footer Navigation Links */
+        .footer-links {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            font-size: 13px;
+        }
+
+        .footer-links a {
+            color: #00ffcc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #ffffff;
+            text-shadow: 0 0 8px #00ffcc;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="modal-overlay">
+        <div class="badge-18">🔞 RESTRICTED 18+</div>
+        <h1 class="title">වයස් සීමා අනතුරු ඇඟවීමයි!</h1>
+        
+        <div class="description">
+            ⚠️ මෙම චිත්‍රපටය වයස අවුරුදු 18ට වැඩි වැඩිහිටියන් සඳහා පමණක් සීමා වේ.<br><br>
+            මෙහි අඩංගු ජවනිකා බාලවයස්කරුවන්ට සුදුසු නොවන අතර, ඉදිරියට යාමට පෙර ඔබගේ වයස අවුරුදු 18ට වැඩි බව තහවුරු කරන්න.
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-accept" onclick="confirmAge()">
+                ✅ මම අවුරුදු 18ට වැඩියි
+            </button>
+            <button class="btn btn-deny" onclick="denyAge()">
+                ❌ මම අවුරුදු 18ට අඩුයි
+            </button>
+        </div>
+
+        <div class="footer-links">
+            <a href="https://lakmina348.github.io/Social/" target="_blank">🌐 𝕊𝕠𝕔𝕚𝕒𝕝 ℙ𝕒𝕘𝕖</a>
+            <a href="https://lakmina348.github.io/Home/" target="_blank">✌︎㋡ -Ｈｏｍｅ</a>
+        </div>
+    </div>
+
+    <script>
+        function confirmAge() {
+            // 18+ endru urudhiyapaduthiyadhum 'M__.html' pakkathirkku sellum
+            window.location.href = "M__.html";
+        }
+
+        function denyAge() {
+            // 18-il kurainthavargalukku '../index.html' pakkathirkku sellum
+            window.location.href = "../index.html";
+        }
+    </script>
+
+</body>
+</html>

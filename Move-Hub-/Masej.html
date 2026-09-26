@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Account Status - Lakmina King👑️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Noto+Sans+Sinhala:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #05070f;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(0, 255, 204, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(0, 153, 255, 0.15) 0%, transparent 40%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Noto Sans Sinhala', 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+            padding: 20px;
+            perspective: 1000px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: rgba(10, 15, 30, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.8),
+                0 0 25px rgba(0, 255, 204, 0.2),
+                inset 0 0 15px rgba(0, 255, 204, 0.1);
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            position: relative;
+        }
+
+        .container:hover {
+            transform: rotateX(2deg) rotateY(-2deg) translateY(-5px);
+            box-shadow: 
+                0 25px 45px rgba(0, 0, 0, 0.9),
+                0 0 35px rgba(0, 255, 204, 0.4),
+                inset 0 0 20px rgba(0, 255, 204, 0.15);
+        }
+
+        .badge-3d {
+            display: inline-block;
+            background: linear-gradient(135deg, #00ffcc, #0088ff);
+            color: #05070f;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 6px 16px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .title-3d {
+            color: #ffffff;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-shadow: 
+                0 0 10px rgba(0, 255, 204, 0.7),
+                2px 2px 4px rgba(0, 0, 0, 0.9);
+            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+            padding-bottom: 15px;
+        }
+
+        .message-box {
+            background: rgba(5, 8, 20, 0.6);
+            border-left: 4px solid #00ffcc;
+            border-radius: 10px;
+            padding: 25px;
+            min-height: 220px;
+            font-size: 16px;
+            line-height: 1.8;
+            color: #e2e8f0;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+            white-space: pre-line;
+            position: relative;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 18px;
+            background-color: #00ffcc;
+            margin-left: 4px;
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
+            box-shadow: 0 0 8px #00ffcc;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn-3d {
+            flex: 1;
+            min-width: 180px;
+            padding: 12px 20px;
+            background: rgba(0, 255, 204, 0.1);
+            border: 1px solid rgba(0, 255, 204, 0.4);
+            color: #00ffcc;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-3d:hover {
+            background: #00ffcc;
+            color: #05070f;
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.6);
+        }
+
+        .footer-tag {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 20px;
+            }
+            .title-3d {
+                font-size: 20px;
+            }
+            .message-box {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="badge-3d">System Notification</div>
+        <h1 class="title-3d">🎉 ගිණුම සාර්ථකයි!</h1>
+        
+        <div class="message-box">
+            <span id="typedText"></span><span class="cursor"></span>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="../My%20Midiya/index.html" target="_blank" class="btn-3d">🌐 𝕊𝕠𝕔𝕚𝕒𝕝 ℙ𝕒𝕘𝕖</a>
+            <a href="../index.html" target="_blank" class="btn-3d">✌︎㋡ -Ｈｏｍｅ</a>
+        </div>
+
+        <div class="footer-tag">
+            DESIGNED FOR LAKMINA KING👑️
+        </div>
+    </div>
+
+    <script>
+        const fullText = `ඔබ සාර්ථකව ගිණුමක් නිර්මාණය කර ඇති අතර වැඩ කරන පැය 24 හෝ දින 2කින් ඔබට කෙටි පණිවිඩයක් ලැබෙනු ඇත. එවිට ඔබ මෙම වෙබ් අඩවියට පැමිණ "Login" බටන් එක ක්ලික් කර SMS එකේ ඇති පාස්වර්ඩ් එක දමා ඇතුලු වන්න.
+
+* ඔබට කිසිදු ප්‍රතිචාරයක් හමු නොවේනම්:
+1. ඔබ නිවැරදි දුරකථන අංකයක් යොදා නැවත ගිණුමක් සාදන්න
+2. අපට පණිවිඩයක් එවන්න { 0788637885 }`;
+
+        let index = 0;
+        const speed = 40;
+
+        function typeWriter() {
+            if (index < fullText.length) {
+                document.getElementById('typedText').textContent += fullText.charAt(index);
+                index++;
+                setTimeout(typeWriter, speed);
+            }
+        }
+
+        window.onload = function() {
+            setTimeout(typeWriter, 500);
+        };
+    </script>
+</body>
+</html>
