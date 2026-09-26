@@ -132,9 +132,12 @@
     <script>
         function verifyAccess() {
             const enteredKey = document.getElementById('passKey').value;
-            const correctKey = "1818" "789456"; // ඔබගේ රහස් මුරපදය මෙතැනට යොදන්න
+            
+            // ඔබට අවශ්‍ය සියලුම මුරපද මෙහි Array එකක් ලෙස අඩංගු කර ඇත
+            const validKeys = ["1818", "7fghhf89456", "22fghfdg55", "4gng455", "220ghdg0", "5gfng874"];
 
-            if (enteredKey === correctKey) {
+            // ලබා දුන් මුරපදය validKeys අරාව (Array) තුළ තිබේදැයි පරීක්ෂා කිරීම
+            if (validKeys.includes(enteredKey)) {
                 // අවසර ලබා දුන් බව බ්‍රවුසරයේ සුරැකීම
                 localStorage.setItem('vip_unlocked', 'true');
 
@@ -147,6 +150,7 @@
                     window.location.href = 'home1.html';
                 }
             } else {
+                // මුරපදය වැරදි නම් දෝෂ පණිවිඩය පෙන්වීම
                 document.getElementById('errorMsg').style.display = 'block';
             }
         }
