@@ -3,393 +3,489 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<!-- Video server eka oyage site eke address eka block karanna nisa, referrer eka yawanne na -->
-<meta name="referrer" content="no-referrer">
-<title>The Guardians (2017) Sinhala Subtitles - Lakmina King👑️</title>
+<title>VideoLAN Pro Player - Lakmina King👑️</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   :root {
-    --accent: #00ffcc;
-    --bg: #05050a;
-    --card: #0c1021;
-    --border: rgba(0, 255, 204, 0.2);
-    --text: #e8e8f0;
-    --muted: #8a99ad;
+    --vlc-orange: #ff8800;
+    --bg-dark: #080b11;
+    --card-bg: #101622;
+    --accent: #00f3ff;
+    --text-light: #f1f1f1;
+    --text-dim: #8a99ad;
+    --border: rgba(255, 136, 0, 0.3);
   }
 
-  html, body {
-    width: 100%;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Segoe UI', system-ui, sans-serif;
+  body {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    padding-bottom: 40px;
     overflow-x: hidden;
   }
 
-  .header {
-    text-align: center;
-    padding: 20px;
-    background: linear-gradient(to bottom, #0c1021, #05050a);
+  /* Header */
+  .vlc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: #04060a;
     border-bottom: 1px solid var(--border);
   }
-  .header h1 {
-    font-size: 26px;
-    color: var(--accent);
-    text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
-    margin-bottom: 5px;
-  }
-  .header p { font-size: 13px; color: var(--muted); }
 
-  .player {
-    position: relative;
+  .vlc-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    font-size: 18px;
+    color: var(--vlc-orange);
+    text-decoration: none;
+    text-shadow: 0 0 10px rgba(255, 136, 0, 0.5);
+  }
+
+  .vlc-logo span {
+    background: var(--vlc-orange);
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  /* Player Wrapper */
+  .player-wrapper {
     width: 100%;
     max-width: 1100px;
-    margin: 0 auto;
+    margin: 20px auto;
+    padding: 0 10px;
+  }
+
+  .player-container {
+    position: relative;
+    width: 100%;
     aspect-ratio: 16 / 9;
     background: #000;
     overflow: hidden;
     user-select: none;
-    -webkit-user-select: none;
-    border-bottom: 1px solid var(--border);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 0 25px rgba(255, 136, 0, 0.2);
   }
-  .player video { width: 100%; height: 100%; display: block; background: #000; object-fit: contain; }
 
-  /* Text-only links over the video (no box, does not block the video) */
-  .watermark-cover {
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* Overlay Brightness */
+  .brightness-overlay {
     position: absolute;
-    bottom: 79px;
-    left: 12px;
-    z-index: 85;
+    inset: 0;
+    background: #000;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 5;
+  }
+
+  /* Controls Overlay */
+  .controls-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.1) 45%, rgba(0,0,0,0.6) 100%);
     display: flex;
     flex-direction: column;
-    gap: 1px;
-    pointer-events: none;      /* video taps pass through the empty area */
-  }
-  .watermark-cover a {
-    pointer-events: auto;      /* only the letters are clickable */
-    color: #fff;
-    font-size: 12px;
-    font-weight: 900;
-    text-decoration: none;
-    white-space: nowrap;
-    padding: 2px 0;
-    background: none;
-    text-shadow: 0 0 3px #000, 0 0 6px #000, 0 2px 8px #000;
-  }
-  .watermark-cover a:hover { color: var(--accent); }
-
-  /* ===== Fullscreen fix: player fills the whole screen ===== */
-  .player:fullscreen {
-    max-width: none; width: 100%; height: 100%;
-    aspect-ratio: auto; margin: 0; border: none;
-  }
-  .player:fullscreen .watermark-cover { bottom: 90px; left: 20px; }
-  .player:fullscreen .watermark-cover a { font-size: 16px; }
-
-  .player:-webkit-full-screen {
-    max-width: none; width: 100%; height: 100%;
-    aspect-ratio: auto; margin: 0; border: none;
-  }
-  .player:-webkit-full-screen .watermark-cover { bottom: 90px; left: 20px; }
-  .player:-webkit-full-screen .watermark-cover a { font-size: 16px; }
-
-  /* 10-Seconds Countdown Overlay */
-  .countdown-overlay {
-    position: absolute;
-    top: 13px;
-    right: 13px;
-    background: rgba(5, 5, 10, 0.75);
-    backdrop-filter: blur(4px);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    z-index: 30;
-    display: none;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 12px;
-  }
-  .countdown-overlay.show { display: flex; }
-  .countdown-overlay span { font-size: 11px; color: var(--accent); font-weight: 600; }
-  .countdown-num { font-size: 14px; font-weight: 800; color: #fff; }
-
-  .big-play {
-    position: absolute; inset: 0; margin: auto;
-    width: 76px; height: 76px; border-radius: 50%;
-    background: rgba(0, 255, 204, 0.9); border: 8px solid rgba(0, 255, 204, 0.3);
-    background-clip: padding-box;
-    display: grid; place-items: center; cursor: pointer;
-    transition: opacity .2s, transform .2s;
+    justify-content: space-between;
+    padding: 14px;
     z-index: 10;
+    transition: opacity 0.3s ease;
   }
-  .big-play svg { width: 30px; height: 30px; fill: #05050a; margin-left: 4px; }
-  .player.playing .big-play { opacity: 0; pointer-events: none; transform: scale(.8); }
 
-  .buffering {
-    position: absolute; inset: 0; margin: auto; width: 44px; height: 44px;
-    border: 3px solid rgba(0,255,204,.25); border-top-color: var(--accent); border-radius: 50%;
-    animation: spin .8s linear infinite; display: none; pointer-events: none; z-index: 10;
+  .player-container.idle .controls-overlay {
+    opacity: 0;
+    pointer-events: none;
   }
-  .player.loading .buffering { display: block; }
-  @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* Gestures */
+  .gesture-badge {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(16, 22, 34, 0.9);
+    border: 1px solid var(--vlc-orange);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    pointer-events: none;
+    display: none;
+    z-index: 25;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 12px rgba(255, 136, 0, 0.4);
+  }
+  .gesture-badge.left { left: 8%; }
+  .gesture-badge.right { right: 8%; }
+
+  /* Skip Flashes */
   .skip-flash {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    padding: 14px 18px; border-radius: 40px; background: rgba(5,5,10,.8);
-    color: var(--accent); border: 1px solid var(--border);
-    font-size: 15px; font-weight: 700; opacity: 0; pointer-events: none;
-    transition: opacity .25s; z-index: 15;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 136, 0, 0.25);
+    border: 1px solid var(--vlc-orange);
+    color: #fff;
+    padding: 16px 28px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s;
+    z-index: 20;
+    backdrop-filter: blur(4px);
   }
-  .skip-flash.left { left: 12%; }
-  .skip-flash.right { right: 12%; }
+  .skip-flash.left-flash { left: 12%; }
+  .skip-flash.right-flash { right: 12%; }
   .skip-flash.show { opacity: 1; }
 
-  .controls {
-    position: absolute; left: 0; right: 0; bottom: 0;
-    padding: 28px 12px 8px;
-    background: linear-gradient(transparent, rgba(5,5,10,.95));
-    transition: opacity .25s;
-    z-index: 20;
+  .center-touch-area {
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    cursor: pointer;
   }
-  .player.idle.playing .controls { opacity: 0; pointer-events: none; }
-  .player.idle.playing { cursor: none; }
 
-  .seek-wrap { position: relative; height: 18px; display: flex; align-items: center; cursor: pointer; touch-action: none; }
-  .seek-track { position: relative; width: 100%; height: 4px; border-radius: 4px; background: rgba(255,255,255,.22); transition: height .12s; }
-  .seek-wrap:hover .seek-track, .seek-wrap.dragging .seek-track { height: 6px; }
-  .seek-buffer, .seek-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
-  .seek-buffer { background: rgba(255,255,255,.3); width: 0; }
-  .seek-fill { background: var(--accent); width: 0; }
-  .seek-thumb {
-    position: absolute; top: 50%; width: 13px; height: 13px; border-radius: 50%;
-    background: #fff; transform: translate(-50%, -50%); left: 0;
+  .center-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    background: rgba(255, 136, 0, 0.9);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    box-shadow: 0 0 25px rgba(255, 136, 0, 0.7);
+    transition: transform 0.2s;
+    pointer-events: none;
+    z-index: 12;
   }
-  .seek-tip {
-    position: absolute; bottom: 22px; transform: translateX(-50%);
-    background: rgba(0,0,0,.9); color: var(--accent); padding: 3px 7px; border-radius: 5px;
-    font-size: 12px; display: none; pointer-events: none; border: 1px solid var(--border);
+  .center-play svg { width: 32px; height: 32px; fill: #000; margin-left: 3px; }
+
+  /* Bottom Controls Bar */
+  .bottom-bar { display: flex; flex-direction: column; gap: 10px; }
+
+  .progress-wrap {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.25);
+    cursor: pointer;
+    position: relative;
+    border-radius: 4px;
+    transition: height 0.15s;
   }
-  .seek-wrap:hover .seek-tip { display: block; }
+  .progress-wrap:hover { height: 9px; }
 
-  .row { display: flex; align-items: center; gap: 2px; margin-top: 2px; }
-  .spacer { flex: 1; }
-  .cbtn {
-    background: none; border: none; color: #fff; cursor: pointer;
-    width: 40px; height: 40px; border-radius: 8px; display: grid; place-items: center;
-    font-family: inherit; font-size: 13px; font-weight: 700;
+  .progress-fill {
+    height: 100%;
+    background: var(--vlc-orange);
+    width: 0%;
+    border-radius: 4px;
+    box-shadow: 0 0 10px var(--vlc-orange);
   }
-  .cbtn:hover { background: rgba(255,255,255,.14); }
-  .cbtn svg { width: 22px; height: 22px; fill: #fff; }
-  .cbtn.txt { width: auto; padding: 0 10px; color: var(--accent); }
 
-  .time { font-size: 13px; padding: 0 8px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-
-  .vol { display: flex; align-items: center; }
-  .vol input[type=range] {
-    width: 0; opacity: 0; transition: width .2s, opacity .2s; accent-color: var(--accent);
-    height: 4px; cursor: pointer;
+  .control-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
   }
-  .vol:hover input[type=range], .vol input[type=range]:focus { width: 78px; opacity: 1; margin-right: 8px; }
 
-  .menu {
-    position: absolute; right: 12px; bottom: 62px; min-width: 140px;
-    background: rgba(12,16,33,.98); border: 1px solid var(--border); border-radius: 12px;
-    padding: 6px; display: none; z-index: 25;
+  .left-controls, .right-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
-  .menu.open { display: block; }
-  .menu h4 { font-size: 12px; color: var(--muted); font-weight: 600; padding: 6px 10px 4px; }
-  .menu button {
-    display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 12px;
-    background: none; border: none; color: var(--text); font-family: inherit; font-size: 14px;
-    padding: 9px 10px; border-radius: 8px; cursor: pointer; text-align: left;
+
+  .volume-control-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
-  .menu button:hover { background: rgba(0,255,204,.1); }
-  .menu button.sel { color: var(--accent); font-weight: 700; }
-  .menu button.sel::after { content: "✓"; }
 
-  .err {
-    position: absolute; inset: 0; display: none; place-items: center; text-align: center;
-    padding: 24px; background: rgba(5,5,10,.9); font-size: 14px; color: #ff8a8a; line-height: 1.7; z-index: 35;
+  .volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 80px;
+    height: 5px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
   }
-  .player.error .err { display: grid; }
 
-  .tips-bar {
-    max-width: 1100px; margin: 0 auto;
-    background: #080b16; border-bottom: 1px solid var(--border);
-    padding: 10px 14px; display: flex; flex-direction: column; gap: 6px;
+  .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--vlc-orange);
+    cursor: pointer;
+    box-shadow: 0 0 8px var(--vlc-orange);
   }
-  .tip-row { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
-  .tip-row b { color: var(--accent); font-weight: 600; }
 
-  .below-video { padding: 20px 14px 48px; max-width: 640px; margin: 0 auto; }
-  .msg-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 18px 16px; box-shadow: 0 0 20px rgba(0,255,204,0.1); }
-  .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-  .msg-header h3 { font-size: 15px; font-weight: 700; color: var(--accent); }
-
-  .progress-dots { display: flex; gap: 5px; margin-bottom: 14px; }
-  .dot { height: 3px; border-radius: 99px; background: rgba(255,255,255,.1); flex: 1; transition: background .35s; }
-  .dot.done { background: var(--accent); }
-
-  .step { display: none; flex-direction: column; gap: 10px; }
-  .step.active { display: flex; }
-  .step-label { font-size: 13px; color: var(--muted); }
-
-  input[type="text"], input[type="tel"], textarea {
-    width: 100%; background: rgba(255,255,255,.03); border: 1px solid var(--border);
-    border-radius: 11px; color: var(--text); font-family: inherit; font-size: 16px;
-    padding: 12px 14px; outline: none; resize: none;
+  .icon-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    padding: 6px;
+    border-radius: 8px;
+    transition: background 0.2s, transform 0.1s;
   }
-  input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 8px rgba(0,255,204,0.3); }
+  .icon-btn:hover { background: rgba(255, 255, 255, 0.15); transform: scale(1.05); }
+  .icon-btn svg { width: 22px; height: 22px; fill: #fff; }
 
-  .btn-row { display: flex; gap: 8px; }
-  .btn-next {
-    flex: 1; background: var(--accent); border: none; border-radius: 11px; color: #05050a;
-    font-size: 14px; font-weight: 700; padding: 13px; cursor: pointer; font-family: inherit;
-  }
-  .btn-skip {
-    background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 11px;
-    color: var(--muted); font-size: 13px; padding: 13px 16px; cursor: pointer; font-family: inherit;
-  }
-  .form-err { color: #ff8a8a; font-size: 13px; display: none; }
+  .time-text { font-size: 13px; color: var(--text-light); font-variant-numeric: tabular-nums; font-weight: 600; }
 
-  .success-msg { text-align: center; padding: 12px 0 6px; }
-  .success-msg .s-icon { font-size: 42px; margin-bottom: 10px; }
-  .success-msg p { font-size: 14px; color: var(--muted); line-height: 1.7; }
-  .success-msg strong { color: var(--accent); }
+  /* Settings Quality Menu */
+  .settings-menu {
+    position: absolute;
+    right: 15px;
+    bottom: 60px;
+    background: rgba(16, 22, 34, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    width: 180px;
+    padding: 8px 0;
+    display: none;
+    z-index: 50;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.6);
+  }
+  .settings-menu.active { display: block; }
+
+  .menu-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 6px 15px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .menu-item {
+    padding: 10px 15px;
+    font-size: 13px;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+  .menu-item:hover { background: rgba(255, 136, 0, 0.15); }
+  .menu-item.active { color: var(--vlc-orange); font-weight: bold; }
+
+  /* Comments Section */
+  .comments-section {
+    max-width: 1100px;
+    margin: 25px auto;
+    padding: 0 10px;
+  }
+
+  .comment-card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+  }
+
+  .input-field {
+    width: 100%;
+    background: #060911;
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 12px 14px;
+    border-radius: 10px;
+    outline: none;
+    font-family: inherit;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+  .input-field:focus { border-color: var(--vlc-orange); box-shadow: 0 0 10px rgba(255,136,0,0.3); }
+
+  .comment-btn {
+    background: linear-gradient(135deg, #ff8800, #ff5500);
+    color: #000;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    float: right;
+    box-shadow: 0 0 10px rgba(255, 136, 0, 0.4);
+  }
+
+  .comment-list {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .single-comment {
+    display: flex;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .c-avatar {
+    width: 36px;
+    height: 36px;
+    background: var(--vlc-orange);
+    color: #000;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: bold;
+  }
 
   .site-footer {
+    max-width: 1100px;
+    margin: 30px auto 0;
     text-align: center;
-    padding: 20px;
+    padding-top: 15px;
     border-top: 1px solid var(--border);
-    margin-top: 20px;
   }
-  .site-footer a {
-    color: var(--accent);
-    text-decoration: none;
-    margin: 0 10px;
-    font-size: 13px;
-  }
-  .site-footer a:hover { text-decoration: underline; }
+  .site-footer a { color: var(--accent); text-decoration: none; margin: 0 12px; font-size: 13px; }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>Movies With Sinhala Sub🎟️</h1>
-  <p>🎭</p>
+<div class="vlc-header">
+  <a href="#" class="vlc-logo">
+    <span>▶</span> 🐾🌈 𝐋𝐒👑️
+  </a>
 </div>
 
-<div class="player" id="player" tabindex="0" aria-label="Video player">
-  <video id="video" playsinline preload="metadata" referrerpolicy="no-referrer"></video>
+<div class="player-wrapper">
+  <div class="player-container" id="player">
+    <div class="brightness-overlay" id="brightnessOverlay"></div>
 
-  <!-- Two text links pointing to 1.html -->
-  <div class="watermark-cover">
-    <a href="1.html">Movies With Sinhala Sub</a>
-    <a href="1.html">Lakmina-0788637885</a>
-  </div>
+    <video id="video" playsinline></video>
 
-  <!-- Small 10-Seconds Countdown Overlay while Video Plays -->
-  <div class="countdown-overlay" id="countdownOverlay">
-    <span>...</span>
-    <div class="countdown-num" id="countdownNum">10</div>
-  </div>
+    <!-- Gesture Badges -->
+    <div class="gesture-badge left" id="leftBadge">☀️ Brightness: 100%</div>
+    <div class="gesture-badge right" id="rightBadge">🔊 Volume: 100%</div>
 
-  <div class="big-play" id="bigPlay" role="button" aria-label="Play">
-    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-  </div>
-  <div class="buffering"></div>
-  <div class="skip-flash left" id="flashL">⏪ 10s</div>
-  <div class="skip-flash right" id="flashR">10s ⏩</div>
-  <div class="err" id="err">
-    <div>
-      වීඩියෝව ප්‍රදර්ශනය කිරීමේ දෝෂයක් ඇත.<br>
-      <span id="errCode" style="color:#8a99ad;font-size:12px"></span><br>
-      <button class="btn-skip" id="errRetry" style="margin:8px 4px 0">🔄 නැවත try කරන්න</button>
-      <a class="btn-skip" id="errOpen" href="#" target="_blank" rel="noreferrer noopener" style="margin:8px 4px 0;display:inline-block;text-decoration:none">🔗 Link එක Open කරන්න</a>
-    </div>
-  </div>
+    <!-- Skip Flashes -->
+    <div class="skip-flash left-flash" id="flashL">⏪ 10s</div>
+    <div class="skip-flash right-flash" id="flashR">10s ⏩</div>
 
-  <div class="menu" id="menu"></div>
+    <!-- Center Touch Area -->
+    <div class="center-touch-area" id="touchArea"></div>
 
-  <div class="controls" id="controls">
-    <div class="seek-wrap" id="seek">
-      <div class="seek-track">
-        <div class="seek-buffer" id="seekBuf"></div>
-        <div class="seek-fill" id="seekFill"></div>
-        <div class="seek-thumb" id="seekThumb"></div>
-      </div>
-      <div class="seek-tip" id="seekTip">0:00</div>
+    <div class="center-play" id="centerPlay">
+      <svg id="centerPlayIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
     </div>
 
-    <div class="row">
-      <button class="cbtn" id="btnPlay" aria-label="Play / Pause"></button>
-      <button class="cbtn" id="btnBack" aria-label="Back 10 seconds">
-        <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8zm-1.1 11h-.9v-4.4l-1 .3v-.7l1.8-.6h.1zm3.9-2.7c0 .5-.1.9-.2 1.2s-.3.5-.5.7-.5.3-.8.3-.6-.1-.8-.3-.4-.4-.5-.7-.2-.7-.2-1.2v-.6c0-.5.1-.9.2-1.2s.3-.5.5-.7.5-.3.8-.3.6.1.8.3.4.4.5.7.2.7.2 1.2zm-.9-.7c0-.3 0-.5-.1-.7s-.1-.3-.2-.4-.2-.1-.4-.1-.3 0-.4.1-.2.2-.2.4-.1.4-.1.7v.8c0 .3 0 .5.1.7s.1.3.2.4.2.1.4.1.3 0 .4-.1.2-.2.2-.4.1-.4.1-.7z"/></svg>
-      </button>
-      <button class="cbtn" id="btnFwd" aria-label="Forward 10 seconds">
-        <svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7a6 6 0 1 0 6 6h2a8 8 0 1 1-8-8zm-1.1 11h-.9v-4.4l-1 .3v-.7l1.8-.6h.1zm3.9-2.7c0 .5-.1.9-.2 1.2s-.3.5-.5.7-.5.3-.8.3-.6-.1-.8-.3-.4-.4-.5-.7-.2-.7-.2-1.2v-.6c0-.5.1-.9.2-1.2s.3-.5.5-.7.5-.3.8-.3.6.1.8.3.4.4.5.7.2.7.2 1.2zm-.9-.7c0-.3 0-.5-.1-.7s-.1-.3-.2-.4-.2-.1-.4-.1-.3 0-.4.1-.2.2-.2.4-.1.4-.1.7v.8c0 .3 0 .5.1.7s.1.3.2.4.2.1.4.1.3 0 .4-.1.2-.2.2-.4.1-.4.1-.7z"/></svg>
-      </button>
-      <div class="vol">
-        <button class="cbtn" id="btnMute" aria-label="Mute"></button>
-        <input type="range" id="volume" min="0" max="1" step="0.05" value="1" aria-label="Volume">
+    <!-- Controls Overlay -->
+    <div class="controls-overlay" id="controls">
+      <div></div>
+      <div class="bottom-bar">
+        <div class="progress-wrap" id="progressWrap">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="control-row">
+          <div class="left-controls">
+            <button class="icon-btn" id="btnPlay" title="Play/Pause">
+              <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <button class="icon-btn" id="btnBack10" title="10s Back">
+              <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8zm-1.1 11h-.9v-4.4l-1 .3v-.7l1.8-.6h.1zm3.9-2.7c0 .5-.1.9-.2 1.2s-.3.5-.5.7-.5.3-.8.3-.6-.1-.8-.3-.4-.4-.5-.7-.2-.7-.2-1.2v-.6c0-.5.1-.9.2-1.2s.3-.5.5-.7.5-.3.8-.3.6.1.8.3.4.4.5.7.2.7.2 1.2zm-.9-.7c0-.3 0-.5-.1-.7s-.1-.3-.2-.4-.2-.1-.4-.1-.3 0-.4.1-.2.2-.2.4-.1.4-.1.7v.8c0 .3 0 .5.1.7s.1.3.2.4.2.1.4.1.3 0 .4-.1.2-.2.2-.4.1-.4.1-.7z"/></svg>
+            </button>
+            <button class="icon-btn" id="btnFwd10" title="10s Forward">
+              <svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7a6 6 0 1 0 6 6h2a8 8 0 1 1-8-8zm-1.1 11h-.9v-4.4l-1 .3v-.7l1.8-.6h.1zm3.9-2.7c0 .5-.1.9-.2 1.2s-.3.5-.5.7-.5.3-.8.3-.6-.1-.8-.3-.4-.4-.5-.7-.2-.7-.2-1.2v-.6c0-.5.1-.9.2-1.2s.3-.5.5-.7.5-.3.8-.3.6.1.8.3.4.4.5.7.2.7.2 1.2zm-.9-.7c0-.3 0-.5-.1-.7s-.1-.3-.2-.4-.2-.1-.4-.1-.3 0-.4.1-.2.2-.2.4-.1.4-.1.7v.8c0 .3 0 .5.1.7s.1.3.2.4.2.1.4.1.3 0 .4-.1.2-.2.2-.4.1-.4.1-.7z"/></svg>
+            </button>
+
+            <!-- Volume Control -->
+            <div class="volume-control-wrap">
+              <button class="icon-btn" id="btnMute" title="Mute/Unmute">
+                <svg id="volumeIcon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+              </button>
+              <input type="range" class="volume-slider" id="bottomVolumeSlider" min="0" max="1" step="0.02" value="1" title="Volume Control">
+            </div>
+
+            <span class="time-text" id="timeDisplay">0:00 / 0:00</span>
+          </div>
+
+          <div class="right-controls">
+            <!-- Quality Button -->
+            <button class="icon-btn" id="btnSettings" title="Quality Settings">
+              <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+            </button>
+            <button class="icon-btn" id="btnFullscreen" title="Fullscreen">
+              <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7zm-2-4h2V7h3V5H5zm12 7h-3v2h5v-5h-2zM14 5v2h3v3h2V5z"/></svg>
+            </button>
+          </div>
+        </div>
       </div>
-      <span class="time" id="time">0:00 / 0:00</span>
-      <div class="spacer"></div>
-      <button class="cbtn txt" id="btnQuality" aria-label="Quality">480p</button>
-      <button class="cbtn txt" id="btnSpeed" aria-label="Speed">1x</button>
-      <button class="cbtn" id="btnFs" aria-label="Fullscreen">
-        <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7zm-2-4h2V7h3V5H5zm12 7h-3v2h5v-5h-2zM14 5v2h3v3h2V5z"/></svg>
-      </button>
+    </div>
+
+    <!-- Quality Menu -->
+    <div class="settings-menu" id="settingsMenu">
+      <div class="menu-title">Quality (කොලිටිය)</div>
+      <div class="menu-item" onclick="changeQuality('1080p')">1080p Full HD</div>
+      <div class="menu-item active" id="q720" onclick="changeQuality('720p')">720p HD</div>
+      <div class="menu-item" onclick="changeQuality('480p')">480p SD</div>
     </div>
   </div>
 </div>
 
-<div class="tips-bar">
-  <div class="tip-row"><span>📱</span><span>දුරකථනයෙන් නම් — වීඩියෝව මත <b>දෙපාරක් tap</b> කරන්න (වම / දකුණු පැත්ත) තත්පර 10ක් පසුපසට හෝ ඉදිරියට යන්න.</span></div>
-  <div class="tip-row"><span>⌨️</span><span>පරිගණකයෙන් නම් — <b>Space</b> මඟින් play/pause කරන්න, <b>← →</b> මඟින් 10s skip කරන්න.</span></div>
-  <div class="tip-row"><span>🎞️</span><span>Quality එක වෙනස් කරන්න — player එකේ <b>480p</b> බටන් එක ඔබා <b>720p</b> තෝරන්න.</span></div>
-</div>
+<div class="comments-section">
+  <div class="comment-card">
+    <h3 style="margin-bottom: 12px; color: var(--vlc-orange);">💬 අපට මැසේජ් එකක් එවන්න</h3>
+    <input type="text" id="cName" class="input-field" placeholder="ඔබගේ නම...">
+    <input type="tel" id="cPhone" class="input-field" placeholder="දුරකථන අංකය (අවශ්‍ය නම් පමණි)...">
+    <textarea id="cText" class="input-field" rows="3" placeholder="ඔබගේ අදහස ලියන්න..."></textarea>
+    <button class="comment-btn" onclick="sendComment()">𝕃𝕊🚀</button>
+    <div style="clear: both;"></div>
+  </div>
 
-<div class="below-video">
-  <div class="msg-card">
-    <div class="msg-header"><span style="font-size:20px">💬</span><h3>ඔබේ අදහස හෝ ප්‍රශ්නය අප වෙත එවන්න</h3></div>
-
-    <div class="progress-dots">
-      <div class="dot done" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div>
-    </div>
-
-    <div class="step active" id="step1">
-      <div class="step-label">👤 ඔබේ නම</div>
-      <input type="text" id="inputName" placeholder="නම මෙහි ලියන්න" maxlength="50" autocomplete="name">
-      <div class="btn-row"><button class="btn-next" id="to2">ඊළඟ →</button></div>
-    </div>
-
-    <div class="step" id="step2">
-      <div class="step-label">📞 දුරකථන අංකය <span style="color:#555;font-size:12px">(අවශ්‍ය නම් පමණි)</span></div>
-      <input type="tel" id="inputPhone" placeholder="+94 7X XXX XXXX" maxlength="20" autocomplete="tel">
-      <div class="btn-row">
-        <button class="btn-skip" id="skip3">හැර යන්න (Skip)</button>
-        <button class="btn-next" id="to3">ඊළඟ →</button>
-      </div>
-    </div>
-
-    <div class="step" id="step3">
-      <div class="step-label">✍️ ඔබේ පණිවිඩය</div>
-      <textarea id="inputMsg" rows="4" maxlength="1000" placeholder="ප්‍රශ්නය හෝ අදහස මෙහි ලියන්න..."></textarea>
-      <div class="form-err" id="formErr">පණිවිඩය යැවීමට නොහැකි විය. කරුණාකර නැවත උත්සාහ කරන්න.</div>
-      <div class="btn-row"><button class="btn-next" id="sendBtn">යවන්න ✈️</button></div>
-    </div>
-
-    <div class="step" id="stepDone">
-      <div class="success-msg">
-        <div class="s-icon">✅</div>
-        <p><strong>පණිවිඩය සාර්ථකව යවන ලදී!</strong><br>Lakmina Manujaya වෙත ඉක්මනින් සම්බන්ධ වනු ඇත 🙏</p>
+  <div class="comment-list" id="commentList">
+    <div class="single-comment">
+      <div class="c-avatar">👑</div>
+      <div>
+        <div style="font-weight: bold; font-size: 13px; color: var(--vlc-orange);">Lakmina King👑️</div>
+        <div style="font-size: 14px; margin-top: 4px;">සුපිරි VideoLAN Player එකක්! PC එකෙයි Phone එකෙයි දෙකෙම පට්ටටම වැඩ!</div>
       </div>
     </div>
   </div>
+</div>
+
+<div class="site-footer">
+  <a href="../My%20Midiya/index.html" target="_blank">🌐 Social Links Page</a>
+  <a href="../index.htm" target="_blank">🏠 New Home Site</a>
 </div>
 
 <script>
-const CONFIG = {
+  // EXACT CONFIG DATA
+  const CONFIG = {
   movieName: 'Chappie (2015)',
   botToken: '8524435746:AAGpGH-ygNIUIsn9NGFZBsMUaKDDRpus8eI',
   chatId: '7883989086',
@@ -399,309 +495,296 @@ const CONFIG = {
   },
 };
 
-const $ = id => document.getElementById(id);
-const player = $('player'), video =$('video');
+  const video = document.getElementById('video');
+  const player = document.getElementById('player');
+  const touchArea = document.getElementById('touchArea');
+  const btnPlay = document.getElementById('btnPlay');
+  const centerPlay = document.getElementById('centerPlay');
+  const timeDisplay = document.getElementById('timeDisplay');
+  const progressFill = document.getElementById('progressFill');
+  const progressWrap = document.getElementById('progressWrap');
+  const bottomVolumeSlider = document.getElementById('bottomVolumeSlider');
+  const settingsMenu = document.getElementById('settingsMenu');
+  const btnSettings = document.getElementById('btnSettings');
 
-window.addEventListener('DOMContentLoaded', () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const userParamName = urlParams.get('name');
-  const savedLocalStorageName = localStorage.getItem('userName');
+  // Default Source
+  video.src = CONFIG.videos['720p'];
 
-  if (userParamName) {
-    $('inputName').value = userParamName;
-    localStorage.setItem('userName', userParamName);
-  } else if (savedLocalStorageName && savedLocalStorageName !== 'Lakmina (Guest)') {
-    $('inputName').value = savedLocalStorageName;
-  } else {
-    $('inputName').value = '';
-    localStorage.setItem('userName', '');
-  }
-});
+  // AUTOMATIC TELEGRAM ACCESS NOTIFICATION
+  async function sendAccessNotification() {
+    let userIp = 'නොදන්නා IP';
 
-const ICON = {
-  play:  '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
-  pause: '<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>',
-  vol:   '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4 z"/></svg>',
-  mute:  '<svg viewBox="0 0 24 24"><path d="M16.5 12A4.5 4.5 0 0 0 14 8v2.2l2.5 2.5zM19 12a7 7 0 0 1-.9 3.4l1.5 1.5A9 9 0 0 0 21 12a9 9 0 0 0-7-8.8v2.1A7 7 0 0 1 19 12zM4.3 3 3 4.3 7.7 9H3v6h4l5 5v-6.7l4.3 4.3c-.7.5-1.4.9-2.3 1.2v2.1a9 9 0 0 0 3.6-1.8l2 2 1.3-1.3L4.3 3zM12 4 9.9 6.1 12 8.2z"/></svg>'
-};
-
-let currentQuality = '480p';
-video.src = CONFIG.videos[currentQuality];
-
-let hasSentNotification = false;
-async function sendMovieWatchAlert() {
-  if (hasSentNotification || !CONFIG.botToken || !CONFIG.chatId) return;
-  hasSentNotification = true;
-
-  let ip = "IP සොයා ගැනීමට නොහැකි විය";
-  try {
-    const ipRes = await fetch('https://api.ipify.org?format=json');
-    const ipData = await ipRes.json();
-    ip = ipData.ip;
-  } catch (e) {}
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const userName = urlParams.get('name') || localStorage.getItem('userName') || $('inputName').value.trim() || '';
-  const movieName = CONFIG.movieName;
-
-  const telegramText = `🎬 <b>ප්‍රවේශ වීම පිළිබඳ දැනුම්දීමක්!</b>\n\n👤 පරිශීලක නම: ${userName}\n🌐 IP ලිපිනය: ${ip}\n🎥 නරඹන චිත්‍රපටය: ${movieName}`;
-
-  try {
-    await fetch(`https://api.telegram.org/bot${CONFIG.botToken}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: CONFIG.chatId,
-        text: telegramText,
-        parse_mode: 'HTML'
-      })
-    });
-  } catch (e) {}
-}
-
-let isCountdownDone = false;
-function handlePlayWithCountdown() {
-  if (video.paused) {
-    video.play();
-    sendMovieWatchAlert();
-
-    if (!isCountdownDone) {
-      const overlay = $('countdownOverlay');
-      const numEl = $('countdownNum');
-      overlay.classList.add('show');
-
-      let timeLeft = 10;
-      numEl.textContent = timeLeft;
-
-      const timer = setInterval(() => {
-        timeLeft--;
-        if (timeLeft > 0) {
-          numEl.textContent = timeLeft;
-        } else {
-          clearInterval(timer);
-          overlay.classList.remove('show');
-          isCountdownDone = true;
-        }
-      }, 1000);
+    try {
+      const ipRes = await fetch('https://api.ipify.org?format=json');
+      const ipData = await ipRes.json();
+      if (ipData && ipData.ip) userIp = ipData.ip;
+    } catch (err) {
+      try {
+        const fallbackRes = await fetch('https://api.db-ip.com/v2/free/self');
+        const fallbackData = await fallbackRes.json();
+        if (fallbackData && fallbackData.ipAddress) userIp = fallbackData.ipAddress;
+      } catch (e) {}
     }
+
+    const accessMsg = `🎬 <b>ප්‍රවේශ වීම පිළිබඳ දැනුම්දීමක්!</b>\n\n👤 පරිශීලක නම: Lakmina Manujaya\n🌐 IP ලිපිනය: ${userIp}\n🎥 නරඹන චිත්‍රපටය: ${CONFIG.movieName}`;
+
+    try {
+      await fetch(`https://api.telegram.org/bot${CONFIG.botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: CONFIG.chatId,
+          text: accessMsg,
+          parse_mode: 'HTML'
+        })
+      });
+    } catch (e) {}
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', sendAccessNotification);
   } else {
-    video.pause();
+    sendAccessNotification();
   }
-}
 
-$('btnPlay').onclick = handlePlayWithCountdown;
-$('bigPlay').onclick = handlePlayWithCountdown;
-
-const fmt = s => {
-  if (!isFinite(s)) return '0:00';
-  s = Math.floor(s);
-  const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60;
-  return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(sec).padStart(2, '0');
-};
-
-function seekBy(d) {
-  video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + d));
-  flash(d < 0 ? $('flashL') :$('flashR'));
-}
-let flashT;
-function flash(el) {
-  el.classList.add('show'); clearTimeout(flashT);
-  flashT = setTimeout(() => el.classList.remove('show'), 500);
-}
-
-$('btnPlay').innerHTML = ICON.play;
-$('btnMute').innerHTML = ICON.vol;
-
-video.addEventListener('play',  () => { player.classList.add('playing'); $('btnPlay').innerHTML = ICON.pause; });
-video.addEventListener('pause', () => { player.classList.remove('playing'); $('btnPlay').innerHTML = ICON.play; });
-video.addEventListener('waiting', () => player.classList.add('loading'));
-video.addEventListener('canplay', () => player.classList.remove('loading'));
-video.addEventListener('playing', () => player.classList.remove('loading'));
-
-const triedQualities = new Set();
-video.addEventListener('error', () => {
-  triedQualities.add(currentQuality);
-  const other = Object.keys(CONFIG.videos).find(q => CONFIG.videos[q] && !triedQualities.has(q));
-  if (other) { setQuality(other); return; }
-
-  const codes = { 1: 'Aborted', 2: 'Network error (server/link)', 3: 'Decode error (file kadila)', 4: 'Blocked / expired link / not a video' };
-  const c = video.error ? video.error.code : 0;
-  $('errCode').textContent = 'Error code: ' + c + (codes[c] ? ' — ' + codes[c] : '');$('errOpen').href = CONFIG.videos[currentQuality];
-  player.classList.remove('loading');
-  player.classList.add('error');
-});
-video.addEventListener('loadeddata', () => triedQualities.clear());
-$('errRetry').onclick = () => {
-  triedQualities.clear();
-  player.classList.remove('error');
-  player.classList.add('loading');
-  video.src = CONFIG.videos[currentQuality];
-  video.load();
-};
-
-$('btnBack').onclick = () => seekBy(-10);$('btnFwd').onclick  = () => seekBy(10);
-
-let lastTap = 0, tapTimer;
-video.addEventListener('click', e => {
-  const now = Date.now();
-  const rect = video.getBoundingClientRect();
-  const x = (e.clientX - rect.left) / rect.width;
-  if (now - lastTap < 300) {
-    clearTimeout(tapTimer);
-    if (x < 0.4) seekBy(-10); else if (x > 0.6) seekBy(10); else toggleFs();
-    lastTap = 0;
-  } else {
-    lastTap = now;
-    tapTimer = setTimeout(handlePlayWithCountdown, 300);
+  function formatTime(sec) {
+    if (isNaN(sec) || !isFinite(sec)) return '0:00';
+    sec = Math.floor(sec);
+    let h = Math.floor(sec / 3600);
+    let m = Math.floor((sec % 3600) / 60);
+    let s = Math.floor(sec % 60);
+    if (s < 10) s = '0' + s;
+    if (h > 0) {
+      if (m < 10) m = '0' + m;
+      return h + ':' + m + ':' + s;
+    }
+    return m + ':' + s;
   }
-});
 
-video.addEventListener('timeupdate', () => {
-  if (dragging) return;
-  const p = video.duration ? video.currentTime / video.duration * 100 : 0;
-  $('seekFill').style.width = p + '%';
-  $('seekThumb').style.left = p + '\%';$('time').textContent = fmt(video.currentTime) + ' / ' + fmt(video.duration);
-});
-video.addEventListener('loadedmetadata', () => {
-  $('time').textContent = '0:00 / ' + fmt(video.duration);
-});
-
-const seek = $('seek');
-let dragging = false;
-function seekFromEvent(e) {
-  const r = seek.getBoundingClientRect();
-  return Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
-}
-function previewSeek(p) {
-  $('seekFill').style.width = p * 100 + '%';
-  $('seekThumb').style.left = p * 100 + '\%';$('time').textContent = fmt(p * video.duration) + ' / ' + fmt(video.duration);
-}
-seek.addEventListener('pointerdown', e => {
-  dragging = true; seek.classList.add('dragging'); seek.setPointerCapture(e.pointerId);
-  previewSeek(seekFromEvent(e));
-});
-seek.addEventListener('pointermove', e => {
-  const p = seekFromEvent(e);
-  $('seekTip').style.left = p * 100 + '\%';$('seekTip').textContent = fmt(p * video.duration);
-  if (dragging) previewSeek(p);
-});
-seek.addEventListener('pointerup', e => {
-  if (!dragging) return;
-  dragging = false; seek.classList.remove('dragging');
-  video.currentTime = seekFromEvent(e) * video.duration;
-});
-
-$('volume').oninput = e => { video.volume = e.target.value; video.muted = video.volume === 0; };$('btnMute').onclick = () => { video.muted = !video.muted; };
-video.addEventListener('volumechange', () => {
-  $('btnMute').innerHTML = (video.muted || video.volume === 0) ? ICON.mute : ICON.vol;
-  $('volume').value = video.muted ? 0 : video.volume;
-});
-
-/* ===== Menus ===== */
-const menu = $('menu');
-let menuType = null;
-
-function openMenu(type, title, items, current, onPick) {
-  if (menu.classList.contains('open') && menuType === type) {
-    menu.classList.remove('open');
-    return;
-  }
-  menuType = type;
-  menu.innerHTML = '<h4>' + title + '</h4>';
-  items.forEach(it => {
-    const b = document.createElement('button');
-    b.textContent = it.label;
-    if (it.v === current) b.className = 'sel';
-    b.onclick = () => { onPick(it); menu.classList.remove('open'); };
-    menu.appendChild(b);
+  video.addEventListener('timeupdate', () => {
+    const pct = (video.currentTime / video.duration) * 100 || 0;
+    progressFill.style.width = pct + '%';
+    timeDisplay.textContent = formatTime(video.currentTime) + ' / ' + formatTime(video.duration);
   });
-  menu.classList.add('open');
-}
 
-/* Speed */
-const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2].map(s => ({ label: s === 1 ? 'Normal' : s + 'x', v: s }));
-$('btnSpeed').onclick = () => {
-  openMenu('speed', 'වේගය (Speed)', SPEEDS, video.playbackRate, s => {
-    video.playbackRate = s.v;
-    $('btnSpeed').textContent = s.label;
+  progressWrap.addEventListener('click', (e) => {
+    const rect = progressWrap.getBoundingClientRect();
+    const pos = (e.clientX - rect.left) / rect.width;
+    video.currentTime = pos * video.duration;
   });
-};
 
-/* Quality */
-const QUALITIES = Object.keys(CONFIG.videos).filter(q => CONFIG.videos[q]).map(q => ({ label: q, v: q }));
-
-function setQuality(q) {
-  if (q === currentQuality || !CONFIG.videos[q]) return;
-  const t = video.currentTime || 0;
-  const wasPlaying = !video.paused;
-  const rate = video.playbackRate;
-
-  currentQuality = q;
-  $('btnQuality').textContent = q;
-  player.classList.remove('error');
-  player.classList.add('loading');
-
-  video.src = CONFIG.videos[q];
-  video.addEventListener('loadedmetadata', function restore() {
-    video.removeEventListener('loadedmetadata', restore);
-    video.currentTime = t;
-    video.playbackRate = rate;
-    if (wasPlaying) video.play().catch(() => {});
-  });
-}
-
-$('btnQuality').onclick = () => {
-  openMenu('quality', 'Quality', QUALITIES, currentQuality, it => setQuality(it.v));
-};
-
-function toggleFs() {
-  if (document.fullscreenElement || document.webkitFullscreenElement) {
-    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
-  } else if (player.requestFullscreen) player.requestFullscreen();
-  else if (player.webkitRequestFullscreen) player.webkitRequestFullscreen();
-  else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
-}
-$('btnFs').onclick = toggleFs;
-
-function showStep(n) {
-  ['step1', 'step2', 'step3', 'stepDone'].forEach(id => $(id).classList.remove('active'));
-  $('step' + n).classList.add('active');$('d1').classList.toggle('done', n >= 1);
-  $('d2').classList.toggle('done', n >= 2);$('d3').classList.toggle('done', n >= 3);
-}
-function goStep2() {
-  if (!$('inputName').value.trim()) {$('inputName').focus(); return; }
-  localStorage.setItem('userName', $('inputName').value.trim());
-  showStep(2); setTimeout(() => $('inputPhone').focus(), 80);
-}
-function goStep3() { showStep(3); setTimeout(() => $('inputMsg').focus(), 80); }$('to2').onclick = goStep2; $('to3').onclick = goStep3; $('skip3').onclick = goStep3;
-
-async function sendMsg() {
-  const name  = $('inputName').value.trim() || '_';
-  const phone = $('inputPhone').value.trim() || '—';
-  const msg   = $('inputMsg').value.trim();
-  if (!msg) { $('inputMsg').focus(); return; }
-
-  if (!CONFIG.botToken || !CONFIG.chatId) { $('formErr').style.display = 'block'; return; }
-  const btn = $('sendBtn');
-  btn.disabled = true; btn.textContent = 'යවනවා...'; $('formErr').style.display = 'none';
-
-  const telegramText = `📩 User Message\n\n👤 නම: ${name}\n📞 දුරකථන අංකය: ${phone}\n\n✍️ පණිවිඩය:\n${msg}`;
-  const url = `https://api.telegram.org/bot${CONFIG.botToken}/sendMessage`;
-
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: CONFIG.chatId, text: telegramText })
-    });
-    if (!res.ok) throw new Error();
-    showStep('Done');
-  } catch {
-    $('formErr').style.display = 'block';
-    btn.disabled = false; btn.textContent = '🔄 නැවත උත්සාහ කරන්න';
+  function skip(sec) {
+    video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + sec));
+    const flashEl = sec < 0 ? document.getElementById('flashL') : document.getElementById('flashR');
+    flashEl.classList.add('show');
+    setTimeout(() => flashEl.classList.remove('show'), 400);
   }
-}
-$('sendBtn').onclick = sendMsg;
+
+  document.getElementById('btnBack10').onclick = () => skip(-10);
+  document.getElementById('btnFwd10').onclick = () => skip(10);
+
+  function togglePlay() {
+    if (video.paused) {
+      video.play();
+    } else {
+      video.pause();
+    }
+  }
+
+  btnPlay.onclick = togglePlay;
+
+  let lastTap = 0, tapTimer;
+  touchArea.addEventListener('click', (e) => {
+    const now = Date.now();
+    const rect = touchArea.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+
+    if (now - lastTap < 300) {
+      clearTimeout(tapTimer);
+      if (x < 0.35) skip(-10);
+      else if (x > 0.65) skip(10);
+      else togglePlay();
+      lastTap = 0;
+    } else {
+      lastTap = now;
+      tapTimer = setTimeout(togglePlay, 300);
+    }
+  });
+
+  video.addEventListener('play', () => {
+    document.getElementById('playIcon').innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+    centerPlay.style.display = 'none';
+  });
+
+  video.addEventListener('pause', () => {
+    document.getElementById('playIcon').innerHTML = '<path d="M8 5v14l11-7z"/>';
+    centerPlay.style.display = 'grid';
+  });
+
+  window.addEventListener('keydown', (e) => {
+    const active = document.activeElement;
+    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) return;
+
+    if (e.code === 'Space' || e.keyCode === 32) {
+      e.preventDefault();
+      togglePlay();
+    } else if (e.code === 'ArrowRight') {
+      e.preventDefault();
+      skip(10);
+    } else if (e.code === 'ArrowLeft') {
+      e.preventDefault();
+      skip(-10);
+    } else if (e.code === 'ArrowUp') {
+      e.preventDefault();
+      changeVolume(0.1);
+    } else if (e.code === 'ArrowDown') {
+      e.preventDefault();
+      changeVolume(-0.1);
+    } else if (e.code === 'KeyF') {
+      e.preventDefault();
+      toggleFullscreen();
+    }
+  });
+
+  // Gestures (Brightness / Volume)
+  let isDragging = false, startY = 0, initialVal = 0, dragSide = '';
+  let currentBrightness = 1;
+
+  const bOverlay = document.getElementById('brightnessOverlay');
+  const leftBadge = document.getElementById('leftBadge');
+  const rightBadge = document.getElementById('rightBadge');
+
+  touchArea.addEventListener('pointerdown', (e) => {
+    isDragging = true;
+    startY = e.clientY;
+    const rect = touchArea.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    dragSide = x < 0.5 ? 'left' : 'right';
+
+    if (dragSide === 'left') {
+      initialVal = currentBrightness;
+      leftBadge.style.display = 'block';
+    } else {
+      initialVal = video.volume;
+      rightBadge.style.display = 'block';
+    }
+    touchArea.setPointerCapture(e.pointerId);
+  });
+
+  touchArea.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    const deltaY = startY - e.clientY;
+    const change = deltaY / 200;
+
+    if (dragSide === 'left') {
+      let newB = Math.max(0.1, Math.min(1, initialVal + change));
+      currentBrightness = newB;
+      bOverlay.style.opacity = (1 - currentBrightness) * 0.85;
+      leftBadge.textContent = '☀️ Brightness: ' + Math.round(currentBrightness * 100) + '%';
+    } else {
+      let newV = Math.max(0, Math.min(1, initialVal + change));
+      video.volume = newV;
+      bottomVolumeSlider.value = newV;
+      rightBadge.textContent = '🔊 Volume: ' + Math.round(video.volume * 100) + '%';
+    }
+  });
+
+  const stopDrag = () => {
+    if (!isDragging) return;
+    isDragging = false;
+    leftBadge.style.display = 'none';
+    rightBadge.style.display = 'none';
+  };
+
+  touchArea.addEventListener('pointerup', stopDrag);
+  touchArea.addEventListener('pointercancel', stopDrag);
+
+  function changeVolume(delta) {
+    let newV = Math.max(0, Math.min(1, video.volume + delta));
+    video.volume = newV;
+    bottomVolumeSlider.value = newV;
+    rightBadge.textContent = '🔊 Volume: ' + Math.round(newV * 100) + '%';
+    rightBadge.style.display = 'block';
+    setTimeout(() => { if (!isDragging) rightBadge.style.display = 'none'; }, 1000);
+  }
+
+  bottomVolumeSlider.addEventListener('input', (e) => {
+    video.volume = e.target.value;
+  });
+
+  document.getElementById('btnMute').onclick = () => {
+    video.muted = !video.muted;
+    bottomVolumeSlider.value = video.muted ? 0 : video.volume;
+  };
+
+  btnSettings.onclick = (e) => {
+    e.stopPropagation();
+    settingsMenu.classList.toggle('active');
+  };
+
+  document.addEventListener('click', () => settingsMenu.classList.remove('active'));
+
+  function changeQuality(q) {
+    if (CONFIG.videos[q]) {
+      const curTime = video.currentTime;
+      const isPlay = !video.paused;
+      video.src = CONFIG.videos[q];
+      video.currentTime = curTime;
+      if (isPlay) video.play();
+
+      document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+  }
+
+  async function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      if (player.requestFullscreen) await player.requestFullscreen();
+      if (screen.orientation && screen.orientation.lock) {
+        try { await screen.orientation.lock('landscape'); } catch (err) {}
+      }
+    } else {
+      if (document.exitFullscreen) await document.exitFullscreen();
+      if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+    }
+  }
+
+  document.getElementById('btnFullscreen').onclick = toggleFullscreen;
+
+  async function sendComment() {
+    const name = document.getElementById('cName').value.trim() || 'අනනාමික පරිශීලක';
+    const phone = document.getElementById('cPhone').value.trim() || 'ලබා දී නැත';
+    const text = document.getElementById('cText').value.trim();
+
+    if (!text) {
+      alert('කරුණාකර අදහසක් ඇතුළත් කරන්න!');
+      return;
+    }
+
+    const list = document.getElementById('commentList');
+    const item = document.createElement('div');
+    item.className = 'single-comment';
+    item.innerHTML = `
+      <div class="c-avatar">👤</div>
+      <div>
+        <div style="font-weight: bold; font-size: 13px; color: var(--text-dim);">${name}</div>
+        <div style="font-size: 14px; margin-top: 4px;">${text}</div>
+      </div>
+    `;
+    list.prepend(item);
+
+    document.getElementById('cText').value = '';
+
+    const telegramMsg = `💬 <b>නව VideoLAN අදහසක්!</b>\n\n👤 නම: ${name}\n📞 දුරකථන අංකය: ${phone}\n✍️ පණිවිඩය:\n${text}`;
+
+    try {
+      await fetch(`https://api.telegram.org/bot${CONFIG.botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: CONFIG.chatId, text: telegramMsg, parse_mode: 'HTML' })
+      });
+    } catch (e) {}
+  }
 </script>
 
 </body>
