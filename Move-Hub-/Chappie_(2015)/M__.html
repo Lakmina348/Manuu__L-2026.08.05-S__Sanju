@@ -110,27 +110,6 @@
     pointer-events: none;
   }
 
-  /* Gestures */
-  .gesture-badge {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(16, 22, 34, 0.9);
-    border: 1px solid var(--vlc-orange);
-    color: #fff;
-    padding: 10px 18px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: bold;
-    pointer-events: none;
-    display: none;
-    z-index: 25;
-    backdrop-filter: blur(6px);
-    box-shadow: 0 0 12px rgba(255, 136, 0, 0.4);
-  }
-  .gesture-badge.left { left: 8%; }
-  .gesture-badge.right { right: 8%; }
-
   /* Skip Flashes */
   .skip-flash {
     position: absolute;
@@ -395,18 +374,18 @@
 
     <video id="video" playsinline></video>
 
-    <div class="gesture-badge left" id="leftBadge">☀️ Brightness: 100%</div>
-    <div class="gesture-badge right" id="rightBadge">🔊 Volume: 100%</div>
-
+    <!-- Skip Flashes -->
     <div class="skip-flash left-flash" id="flashL">⏪ 10s</div>
     <div class="skip-flash right-flash" id="flashR">10s ⏩</div>
 
+    <!-- Center Touch Area -->
     <div class="center-touch-area" id="touchArea"></div>
 
     <div class="center-play" id="centerPlay">
       <svg id="centerPlayIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
     </div>
 
+    <!-- Controls Overlay -->
     <div class="controls-overlay" id="controls">
       <div></div>
       <div class="bottom-bar">
@@ -426,6 +405,7 @@
               <svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7a6 6 0 1 0 6 6h2a8 8 0 1 1-8-8zm-1.1 11h-.9v-4.4l-1 .3v-.7l1.8-.6h.1zm3.9-2.7c0 .5-.1.9-.2 1.2s-.3.5-.5.7-.5.3-.8.3-.6-.1-.8-.3-.4-.4-.5-.7-.2-.7-.2-1.2v-.6c0-.5.1-.9.2-1.2s.3-.5.5-.7.5-.3.8-.3.6.1.8.3.4.4.5.7.2.7.2 1.2zm-.9-.7c0-.3 0-.5-.1-.7s-.1-.3-.2-.4-.2-.1-.4-.1-.3 0-.4.1-.2.2-.2.4-.1.4-.1.7v.8c0 .3 0 .5.1.7s.1.3.2.4.2.1.4.1.3 0 .4-.1.2-.2.2-.4.1-.4.1-.7z"/></svg>
             </button>
 
+            <!-- Volume Control -->
             <div class="volume-control-wrap">
               <button class="icon-btn" id="btnMute" title="Mute/Unmute">
                 <svg id="volumeIcon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
@@ -437,6 +417,7 @@
           </div>
 
           <div class="right-controls">
+            <!-- Quality Button -->
             <button class="icon-btn" id="btnSettings" title="Quality Settings">
               <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
             </button>
@@ -448,6 +429,7 @@
       </div>
     </div>
 
+    <!-- Quality Menu -->
     <div class="settings-menu" id="settingsMenu">
       <div class="menu-title">Quality (කොලිටිය)</div>
       <div class="menu-item" onclick="changeQuality('1080p', this)">1080p Full HD</div>
@@ -651,8 +633,6 @@
   let currentBrightness = 1;
 
   const bOverlay = document.getElementById('brightnessOverlay');
-  const leftBadge = document.getElementById('leftBadge');
-  const rightBadge = document.getElementById('rightBadge');
 
   touchArea.addEventListener('pointerdown', (e) => {
     isDragging = true;
@@ -663,10 +643,8 @@
 
     if (dragSide === 'left') {
       initialVal = currentBrightness;
-      leftBadge.style.display = 'block';
     } else {
       initialVal = video.volume;
-      rightBadge.style.display = 'block';
     }
     touchArea.setPointerCapture(e.pointerId);
   });
@@ -680,20 +658,16 @@
       let newB = Math.max(0.1, Math.min(1, initialVal + change));
       currentBrightness = newB;
       bOverlay.style.opacity = (1 - currentBrightness) * 0.85;
-      leftBadge.textContent = '☀️ Brightness: ' + Math.round(currentBrightness * 100) + '%';
     } else {
       let newV = Math.max(0, Math.min(1, initialVal + change));
       video.volume = newV;
       bottomVolumeSlider.value = newV;
-      rightBadge.textContent = '🔊 Volume: ' + Math.round(video.volume * 100) + '%';
     }
   });
 
   const stopDrag = () => {
     if (!isDragging) return;
     isDragging = false;
-    leftBadge.style.display = 'none';
-    rightBadge.style.display = 'none';
   };
 
   touchArea.addEventListener('pointerup', stopDrag);
@@ -703,9 +677,6 @@
     let newV = Math.max(0, Math.min(1, video.volume + delta));
     video.volume = newV;
     bottomVolumeSlider.value = newV;
-    rightBadge.textContent = '🔊 Volume: ' + Math.round(newV * 100) + '%';
-    rightBadge.style.display = 'block';
-    setTimeout(() => { if (!isDragging) rightBadge.style.display = 'none'; }, 1000);
   }
 
   bottomVolumeSlider.addEventListener('input', (e) => {
