@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
 <title>VideoLAN Pro Player - Lakmina King👑️</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -102,13 +103,33 @@
     padding: 14px;
     z-index: 10;
     transition: opacity 0.3s ease;
-    pointer-events: none;
   }
 
   .player-container.idle .controls-overlay {
     opacity: 0;
     pointer-events: none;
   }
+
+  /* Gestures */
+  .gesture-badge {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(16, 22, 34, 0.9);
+    border: 1px solid var(--vlc-orange);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    pointer-events: none;
+    display: none;
+    z-index: 25;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 12px rgba(255, 136, 0, 0.4);
+  }
+  .gesture-badge.left { left: 8%; }
+  .gesture-badge.right { right: 8%; }
 
   /* Skip Flashes */
   .skip-flash {
@@ -153,18 +174,13 @@
     cursor: pointer;
     box-shadow: 0 0 25px rgba(255, 136, 0, 0.7);
     transition: transform 0.2s;
-    pointer-events: none;
+    pointer-events: auto;
     z-index: 12;
   }
   .center-play svg { width: 32px; height: 32px; fill: #000; margin-left: 3px; }
 
   /* Bottom Controls Bar */
-  .bottom-bar { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 10px; 
-    pointer-events: auto;
-  }
+  .bottom-bar { display: flex; flex-direction: column; gap: 10px; }
 
   .progress-wrap {
     width: 100%;
@@ -257,7 +273,6 @@
     display: none;
     z-index: 50;
     box-shadow: 0 5px 25px rgba(0,0,0,0.6);
-    pointer-events: auto;
   }
   .settings-menu.active { display: block; }
 
@@ -374,6 +389,10 @@
 
     <video id="video" playsinline></video>
 
+    <!-- Gesture Badges -->
+    <div class="gesture-badge left" id="leftBadge">☀️ Brightness: 100%</div>
+    <div class="gesture-badge right" id="rightBadge">🔊 Volume: 100%</div>
+
     <!-- Skip Flashes -->
     <div class="skip-flash left-flash" id="flashL">⏪ 10s</div>
     <div class="skip-flash right-flash" id="flashR">10s ⏩</div>
@@ -432,9 +451,9 @@
     <!-- Quality Menu -->
     <div class="settings-menu" id="settingsMenu">
       <div class="menu-title">Quality (කොලිටිය)</div>
-      <div class="menu-item" onclick="changeQuality('1080p', this)">1080p Full HD</div>
-      <div class="menu-item active" id="q720" onclick="changeQuality('720p', this)">720p HD</div>
-      <div class="menu-item" onclick="changeQuality('480p', this)">480p SD</div>
+      <div class="menu-item" onclick="changeQuality('1080p')">1080p Full HD</div>
+      <div class="menu-item active" id="q720" onclick="changeQuality('720p')">720p HD</div>
+      <div class="menu-item" onclick="changeQuality('480p')">480p SD</div>
     </div>
   </div>
 </div>
@@ -445,7 +464,7 @@
     <input type="text" id="cName" class="input-field" placeholder="ඔබගේ නම...">
     <input type="tel" id="cPhone" class="input-field" placeholder="දුරකථන අංකය (අවශ්‍ය නම් පමණි)...">
     <textarea id="cText" class="input-field" rows="3" placeholder="ඔබගේ අදහස ලියන්න..."></textarea>
-    <button class="comment-btn" onclick="sendComment()">𝕃𝕊🚀</button>
+    <button class="comment-btn" onclick="sendComment()">𝕊𝕖𝕟𝕕🚀</button>
     <div style="clear: both;"></div>
   </div>
 
@@ -567,13 +586,18 @@
 
   function togglePlay() {
     if (video.paused) {
-      video.play().catch(err => console.log("Play error:", err));
+      video.play();
     } else {
       video.pause();
     }
   }
 
   btnPlay.onclick = togglePlay;
+
+  centerPlay.onclick = (e) => {
+    e.stopPropagation();
+    togglePlay();
+  };
 
   let lastTap = 0, tapTimer;
   touchArea.addEventListener('click', (e) => {
@@ -633,6 +657,8 @@
   let currentBrightness = 1;
 
   const bOverlay = document.getElementById('brightnessOverlay');
+  const leftBadge = document.getElementById('leftBadge');
+  const rightBadge = document.getElementById('rightBadge');
 
   touchArea.addEventListener('pointerdown', (e) => {
     isDragging = true;
@@ -643,8 +669,10 @@
 
     if (dragSide === 'left') {
       initialVal = currentBrightness;
+      leftBadge.style.display = 'block';
     } else {
       initialVal = video.volume;
+      rightBadge.style.display = 'block';
     }
     touchArea.setPointerCapture(e.pointerId);
   });
@@ -658,16 +686,20 @@
       let newB = Math.max(0.1, Math.min(1, initialVal + change));
       currentBrightness = newB;
       bOverlay.style.opacity = (1 - currentBrightness) * 0.85;
+      leftBadge.textContent = '☀️ Brightness: ' + Math.round(currentBrightness * 100) + '%';
     } else {
       let newV = Math.max(0, Math.min(1, initialVal + change));
       video.volume = newV;
       bottomVolumeSlider.value = newV;
+      rightBadge.textContent = '🔊 Volume: ' + Math.round(video.volume * 100) + '%';
     }
   });
 
   const stopDrag = () => {
     if (!isDragging) return;
     isDragging = false;
+    leftBadge.style.display = 'none';
+    rightBadge.style.display = 'none';
   };
 
   touchArea.addEventListener('pointerup', stopDrag);
@@ -677,6 +709,9 @@
     let newV = Math.max(0, Math.min(1, video.volume + delta));
     video.volume = newV;
     bottomVolumeSlider.value = newV;
+    rightBadge.textContent = '🔊 Volume: ' + Math.round(newV * 100) + '%';
+    rightBadge.style.display = 'block';
+    setTimeout(() => { if (!isDragging) rightBadge.style.display = 'none'; }, 1000);
   }
 
   bottomVolumeSlider.addEventListener('input', (e) => {
@@ -695,23 +730,16 @@
 
   document.addEventListener('click', () => settingsMenu.classList.remove('active'));
 
-  function changeQuality(q, el) {
+  function changeQuality(q) {
     if (CONFIG.videos[q]) {
       const curTime = video.currentTime;
       const isPlay = !video.paused;
       video.src = CONFIG.videos[q];
-      
-      const onLoaded = () => {
-        video.currentTime = curTime;
-        if (isPlay) video.play().catch(e => console.log(e));
-        video.removeEventListener('loadedmetadata', onLoaded);
-      };
-      video.addEventListener('loadedmetadata', onLoaded);
+      video.currentTime = curTime;
+      if (isPlay) video.play();
 
-      document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
-      if (el) {
-        el.classList.add('active');
-      }
+      document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+      event.target.classList.add('active');
     }
   }
 

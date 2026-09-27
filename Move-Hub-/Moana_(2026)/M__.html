@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
 <title>VideoLAN Pro Player - Lakmina King👑️</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -173,7 +174,7 @@
     cursor: pointer;
     box-shadow: 0 0 25px rgba(255, 136, 0, 0.7);
     transition: transform 0.2s;
-    pointer-events: none;
+    pointer-events: auto;
     z-index: 12;
   }
   .center-play svg { width: 32px; height: 32px; fill: #000; margin-left: 3px; }
@@ -463,7 +464,7 @@
     <input type="text" id="cName" class="input-field" placeholder="ඔබගේ නම...">
     <input type="tel" id="cPhone" class="input-field" placeholder="දුරකථන අංකය (අවශ්‍ය නම් පමණි)...">
     <textarea id="cText" class="input-field" rows="3" placeholder="ඔබගේ අදහස ලියන්න..."></textarea>
-    <button class="comment-btn" onclick="sendComment()">𝕃𝕊🚀</button>
+    <button class="comment-btn" onclick="sendComment()">𝕊𝕖𝕟𝕕🚀</button>
     <div style="clear: both;"></div>
   </div>
 
@@ -486,14 +487,14 @@
 <script>
   // EXACT CONFIG DATA
   const CONFIG = {
-    movieName: 'Moana (2026)',
-    botToken: '8524435746:AAGpGH-ygNIUIsn9NGFZBsMUaKDDRpus8eI',
-    chatId: '7883989086',
-    videos: {
-      '480p': 'https://cs07.skylines822.online/Moana%20(2026)%20English%20WEB-[CineSubz.co]-480p.mp4?play=true',
-      '720p': 'https://cs07.skylines822.online/Moana%20(2026)%20English%20WEB-[CineSubz.co]-720p.mp4?play=true',
-      '1080p': 'https://cs07.skylines822.online/Moana%20(2026)%20English%20WEB-[CineSubz.co]-1080p.mp4?play=true'
-    }
+  movieName: 'Moana (2026)',
+  botToken: '8524435746:AAGpGH-ygNIUIsn9NGFZBsMUaKDDRpus8eI',
+  chatId: '7883989086',
+  videos: {
+     '480p': 'https://cs07.skylines822.online/Moana%20(2026)%20English%20WEB-[CineSubz.co]-480p.mp4?play=true.mp4?play=true',
+    '720p': 'https://cs07.skylines822.online/Moana%20(2026)%20English%20WEB-[CineSubz.co]-720p.mp4?play=true.mp4?play=true',
+    '1080p': 'https://cs07.skylines822.online/Moana%20(2026)%20English%20WEB-[CineSubz.co]-1080p.mp4?play=true.mp4?play=true'
+  },
 };
 
   const video = document.getElementById('video');
@@ -593,6 +594,11 @@
   }
 
   btnPlay.onclick = togglePlay;
+
+  centerPlay.onclick = (e) => {
+    e.stopPropagation();
+    togglePlay();
+  };
 
   let lastTap = 0, tapTimer;
   touchArea.addEventListener('click', (e) => {
