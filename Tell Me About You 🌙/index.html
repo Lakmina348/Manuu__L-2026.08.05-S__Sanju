@@ -48,14 +48,26 @@ const f=document.getElementById("f"),s=document.getElementById("s"),gate=documen
 const v=n=>f.elements[n]?.value.trim()||"—";
 const esc=t=>t.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let built=null,fname="My_Moon_About_Me.html";
-f.onsubmit=e=>{e.preventDefault();s.textContent="";gate.classList.add("show");result.classList.remove("show");gs.textContent="";pw.value="";gate.scrollIntoView({behavior:"smooth"});pw.focus()};
+f.onsubmit=e=>{
+  e.preventDefault();
+  if(document.activeElement) document.activeElement.blur();
+  s.textContent="";
+  gate.classList.add("show");
+  result.classList.remove("show");
+  gs.textContent="";
+  pw.value="";
+  setTimeout(()=>{
+    gate.scrollIntoView({behavior:"auto",block:"center"});
+    pw.focus();
+  },300);
+};
 pw.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();unlock()}};
 document.getElementById("pwb").onclick=unlock;
 async function unlock(){const p=pw.value;if(!p.trim()){gs.textContent="⚠️ Password එකක් දාන්න.";return}
 if(!(window.crypto&&crypto.subtle)){gs.textContent="❌ මේ browser එකේ encryption support නෑ.";return}
 gs.textContent="⏳ හදනවා...";try{built=await buildPage(p)}catch(x){gs.textContent="❌ Error එකක්.";return}
 fname="My_Moon_"+(v("name").replace(/[^\w\u0D80-\u0DFF]+/g,"_")||"About_Me")+".html";
-gs.textContent="✅ Lock වුණා 💜";gate.classList.remove("show");result.classList.add("show");result.scrollIntoView({behavior:"smooth"});sendTelegram()}
+gs.textContent="✅ Lock වුණා 💜";gate.classList.remove("show");result.classList.add("show");result.scrollIntoView({behavior:"smooth",block:"center"});sendTelegram()}
 const b64=u=>{let t="";u.forEach(c=>t+=String.fromCharCode(c));return btoa(t)};
 async function buildPage(pass){
 const css=document.querySelector("style").textContent;
