@@ -24,13 +24,20 @@
 <p class="sub">පුංචි දේවල් පවා කියන්න. ඔයා ගැන මම දැනගන්න කැමති ලස්සන little form එකක් 💜</p>
 </section>
 <form id="f" class="card"><div class="grid">
-<div class="field"><label>👩 නම / Nickname</label><input name="name" required></div><div class="field"><label>🎂 උපන් දිනය</label><input name="birthday" type="date"></div>
+<div class="field"><label>👩 නම / Nickname</label><input name="name" required></div>
+<div class="field"><label>📝 සම්පූර්ණ නම</label><input name="full_name"></div>
+<div class="field"><label>💖 ආදරේට කියන නම</label><input name="love_name"></div>
+<div class="field"><label>🎂 උපන් දිනය</label><input name="birthday" type="date"></div>
 <div class="field"><label>🍕 ආසම කෑම</label><input name="food"></div><div class="field"><label>🎨 ආසම පාට</label><input name="color"></div>
 <div class="field"><label>🚫 කන්න ආස නැති කෑම</label><input name="dislike_food"></div><div class="field"><label>🥤 බොන්න ආස දේවල්</label><input name="drink"></div>
 <div class="field"><label>📍 යන්න කැමති තැන්</label><input name="places"></div><div class="field"><label>🎧 ආසම සින්දු / Artist</label><input name="music"></div>
 <div class="field"><label>🎮 කරන්න ආසම දේ</label><input name="hobby"></div><div class="field"><label>🌎 මේ ලෝකේ ආසම දේ</label><input name="favorite_thing"></div>
 <div class="field"><label>🌸 ආසම මල්</label><input name="flower"></div><div class="field"><label>🐾 ආසම සත්තු</label><input name="animal"></div>
-<div class="field"><label>🎬 ආසම Movie / Series</label><input name="movie"></div><div class="field"><label>☀️ කැමති උදේද 🌙 රෑද?</label><select name="time"><option value="">තෝරන්න</option><option>උදේ ☀️</option><option>රෑ 🌙</option><option>දෙකම 💜</option></select></div>
+<div class="field"><label>🎬 ආසම Movie / Series</label><input name="movie"></div>
+<div class="field"><label>☀️️ කැමති උදේද 🌙 රෑද?</label><select name="time"><option value="">තෝරන්න</option><option>උදේ ☀️️</option><option>රෑ 🌙</option><option>දෙකම 💜</option></select></div>
+<div class="field"><label>🤫 කාටවත් කියපු නැති දෙයක් තියෙනවද?</label><select name="secret_everyone"><option value="">තෝරන්න</option><option>ඔව්</option><option>නෑ</option></select></div>
+<div class="field"><label>🌍 මේ ලෝකේ වැඩිපුරම ආදරේ කාටද?</label><input name="love_most"></div>
+<div class="field full"><label>💜 ඔයා මට නොකියා හිතේ හංගන් ඉන්න දෙයක් තියෙනවද?</label><textarea name="secret_me"></textarea></div>
 <div class="field full"><label>💭 සතුටු නැති වෙලාවක ඔයාව සතුටු කරන්න පුළුවන් දෙයක්?</label><textarea name="comfort"></textarea></div>
 <div class="field full"><label>🥺 ඔයාට කෙනෙක්ගෙන් අකමැතිම දෙයක්?</label><textarea name="dislike_people"></textarea></div>
 <div class="field full"><label>🫶 ආදරේ කරන කෙනෙක්ගෙන් බලාපොරොත්තු වෙන දේ?</label><textarea name="expectation"></textarea></div>
@@ -43,7 +50,31 @@
 </div>
 <script>
 const BOT_TOKEN="8524435746:AAGpGH-ygNIUIsn9NGFZBsMUaKDDRpus8eI",CHAT_ID="7883989086";
-const FIELDS=[["name","👩","නම"],["birthday","🎂","උපන් දිනය"],["food","🍕","ආසම කෑම"],["color","🎨","ආසම පාට"],["dislike_food","🚫","කන්න ආස නැති කෑම"],["drink","🥤","බොන්න ආස දේවල්"],["places","📍","යන්න කැමති තැන්"],["music","🎧","ආසම සින්දු / Artist"],["hobby","🎮","කරන්න ආසම දේ"],["favorite_thing","🌎","මේ ලෝකේ ආසම දේ"],["flower","🌸","ආසම මල්"],["animal","🐾","ආසම සත්තු"],["movie","🎬","ආසම Movie / Series"],["time","☀️","කැමති වෙලාව"],["comfort","💭","සතුටු කරන්න පුළුවන් දෙයක්"],["dislike_people","🥺","අකමැතිම දෙයක්"],["expectation","🫶","බලාපොරොත්තුව"],["extra","✨","අමතර දේවල්"]];
+const FIELDS=[
+  ["name","👩","නම / Nickname"],
+  ["full_name","📝","සම්පූර්ණ නම"],
+  ["love_name","💖","ආදරේට කියන නම"],
+  ["birthday","🎂","උපන් දිනය"],
+  ["food","🍕","ආසම කෑම"],
+  ["color","🎨","ආසම පාට"],
+  ["dislike_food","🚫","කන්න ආස නැති කෑම"],
+  ["drink","🥤","බොන්න ආස දේවල්"],
+  ["places","📍","යන්න කැමති තැන්"],
+  ["music","🎧","ආසම සින්දු / Artist"],
+  ["hobby","🎮","කරන්න ආසම දේ"],
+  ["favorite_thing","🌎","මේ ලෝකේ ආසම දේ"],
+  ["flower","🌸","ආසම මල්"],
+  ["animal","🐾","ආසම සත්තු"],
+  ["movie","🎬","ආසම Movie / Series"],
+  ["time","☀️","කැමති වෙලාව"],
+  ["secret_everyone","🤫","කාටවත් කියපු නැති දෙයක් තියෙනවද"],
+  ["love_most","🌍","වැඩිපුරම ආදරේ කාටද"],
+  ["secret_me","💜","හිතේ හංගන් ඉන්න දේ"],
+  ["comfort","💭","සතුටු කරන්න පුළුවන් දෙයක්"],
+  ["dislike_people","🥺","අකමැතිම දෙයක්"],
+  ["expectation","🫶","බලාපොරොත්තුව"],
+  ["extra","✨","අමතර දේවල්"]
+];
 const f=document.getElementById("f"),s=document.getElementById("s"),gate=document.getElementById("gate"),result=document.getElementById("result"),pw=document.getElementById("pw"),gs=document.getElementById("gs"),rs=document.getElementById("rs");
 const v=n=>f.elements[n]?.value.trim()||"—";
 const esc=t=>t.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -60,7 +91,7 @@ const b64=u=>{let t="";u.forEach(c=>t+=String.fromCharCode(c));return btoa(t)};
 async function buildPage(pass){
 const css=document.querySelector("style").textContent;
 const av='<div class="avatar"><div class="hair"></div><div class="head"><div class="fringe"></div><div class="eye e1"></div><div class="eye e2"></div><div class="mouth"></div></div><div class="body3d"></div></div>';
-const cards=FIELDS.map(([k,i,l])=>`<div class="ans${["comfort","dislike_people","expectation","extra"].includes(k)?" full":""}"><div class="q">${i} ${l}</div><div class="a">${esc(v(k))}</div></div>`).join("");
+const cards=FIELDS.map(([k,i,l])=>`<div class="ans${["secret_me","comfort","dislike_people","expectation","extra"].includes(k)?" full":""}"><div class="q">${i} ${l}</div><div class="a">${esc(v(k))}</div></div>`).join("");
 const inner=`<section class="hero"><span class="badge">💜 Little Things I Love</span>${av}<h1>${esc(v("name"))} 🌙</h1><p class="sub">ඔයා ගැන මම දැනගත්ත ලස්සන පුංචි දේවල් 💜</p></section><div class="card"><div class="grid">${cards}</div></div><p class="foot">Made with 💜 · My Moon</p>`;
 const enc=new TextEncoder(),salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));
 const km=await crypto.subtle.importKey("raw",enc.encode(pass),"PBKDF2",false,["deriveKey"]);
