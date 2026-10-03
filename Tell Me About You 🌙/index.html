@@ -5,13 +5,31 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>My Moon 💜 — About Me</title>
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:system-ui,sans-serif;color:#fff;background:radial-gradient(circle at 15% 15%,#7c3aed55,transparent 30%),radial-gradient(circle at 85% 20%,#db277755,transparent 28%),#090312}
-.wrap{max-width:760px;margin:auto;padding:22px 14px 45px}.hero{text-align:center}.badge{display:inline-block;padding:7px 13px;border:1px solid #d8a0ff55;border-radius:99px;background:#fff1;color:#e9c9ff;font-size:13px}h1{font-size:34px;margin:14px 0 6px;text-shadow:0 0 25px #c084fc}.sub{color:#c9addb}
-.avatar{width:145px;height:145px;margin:18px auto;position:relative;animation:float 4s ease-in-out infinite;filter:drop-shadow(0 18px 22px #0008)}@keyframes float{50%{transform:translateY(-8px) rotateY(8deg)}}.head{position:absolute;width:92px;height:105px;left:27px;top:17px;background:linear-gradient(145deg,#ffd9c7,#eeb29e);border-radius:48%;}.hair{position:absolute;width:108px;height:112px;left:18px;top:10px;background:linear-gradient(135deg,#190d25,#56316c);border-radius:52%;z-index:-1}.fringe{position:absolute;width:75px;height:35px;left:9px;top:6px;background:#24112f;border-radius:50%}.eye{position:absolute;width:8px;height:10px;background:#24142c;border-radius:50%;top:45px}.e1{left:23px}.e2{left:57px}.mouth{position:absolute;left:35px;top:66px;width:20px;height:8px;border-bottom:2px solid #a33d65;border-radius:50%}.body3d{position:absolute;width:115px;height:62px;left:15px;top:101px;background:linear-gradient(145deg,#8b5cf6,#4c1d95);border-radius:50px 50px 25px 25px}
-.card{background:#1f0c31bb;border:1px solid #d8a0ff33;backdrop-filter:blur(18px);border-radius:25px;padding:18px;box-shadow:0 20px 55px #0007}.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:flex;flex-direction:column;gap:7px}.full{grid-column:1/-1}label{font-size:14px;color:#edceff;font-weight:700}input,textarea,select{width:100%;border:1px solid #d8a0ff33;outline:none;border-radius:15px;padding:13px 14px;color:#fff;background:#160a22;font-size:15px}input:focus,textarea:focus,select:focus{border-color:#c084fc;box-shadow:0 0 0 3px #a855f722}textarea{min-height:78px;resize:vertical}button{width:100%;padding:15px;border:0;border-radius:17px;margin-top:15px;color:#fff;font-size:16px;font-weight:800;background:linear-gradient(135deg,#7c3aed,#db2777);box-shadow:0 12px 28px #8b5cf644;cursor:pointer}.status{text-align:center;margin-top:12px;min-height:24px;font-weight:700}.note{font-size:12px;color:#bda4ca;line-height:1.55}@media(max-width:600px){.grid{grid-template-columns:1fr}.full{grid-column:auto}h1{font-size:29px}}
-
-.gate,.result{display:none;margin-top:18px}.gate.show,.result.show{display:block}
-.gate h2,.result h2{margin:0 0 6px;font-size:22px;text-shadow:0 0 18px #c084fc}.gate p,.result p{color:#c9addb;font-size:14px;margin:0 0 12px}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:system-ui,sans-serif;color:#fff;background:radial-gradient(circle at 15% 15%,#7c3aed55,transparent 30%),radial-gradient(circle at 85% 20%,#db277755,transparent 28%),#090312}
+.wrap{max-width:760px;margin:auto;padding:22px 14px 45px}
+.hero{text-align:center;margin-bottom:20px}
+.badge{display:inline-block;padding:7px 13px;border:1px solid #d8a0ff55;border-radius:99px;background:#fff1;color:#e9c9ff;font-size:13px}
+h1{font-size:34px;margin:14px 0 6px;text-shadow:0 0 25px #c084fc}
+.sub{color:#c9addb}
+.hero-img{width:100%;max-width:550px;height:auto;border-radius:20px;border:2px solid #db277755;box-shadow:0 0 25px rgba(219,39,119,0.3);margin:18px auto;display:block;object-fit:cover}
+.card{background:#1f0c31bb;border:1px solid #d8a0ff33;backdrop-filter:blur(18px);border-radius:25px;padding:18px;box-shadow:0 20px 55px #0007}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.field{display:flex;flex-direction:column;gap:7px}
+.full{grid-column:1/-1}
+label{font-size:14px;color:#edceff;font-weight:700}
+input,textarea,select{width:100%;border:1px solid #d8a0ff33;outline:none;border-radius:15px;padding:13px 14px;color:#fff;background:#160a22;font-size:15px}
+input:focus,textarea:focus,select:focus{border-color:#c084fc;box-shadow:0 0 0 3px #a855f722}
+textarea{min-height:78px;resize:vertical}
+button{width:100%;padding:15px;border:0;border-radius:17px;margin-top:15px;color:#fff;font-size:16px;font-weight:800;background:linear-gradient(135deg,#7c3aed,#db2777);box-shadow:0 12px 28px #8b5cf644;cursor:pointer}
+button[type="submit"]{position:sticky;bottom:10px;z-index:9}
+.status{text-align:center;margin-top:12px;min-height:24px;font-weight:700}
+.note{font-size:12px;color:#bda4ca;line-height:1.55}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.full{grid-column:auto}h1{font-size:29px}}
+.gate,.result{display:none;margin-top:18px}
+.gate.show,.result.show{display:block}
+.gate h2,.result h2{margin:0 0 6px;font-size:22px;text-shadow:0 0 18px #c084fc}
+.gate p,.result p{color:#c9addb;font-size:14px;margin:0 0 12px}
 .btn2{background:#fff1;border:1px solid #d8a0ff55;box-shadow:none}
 </style>
 </head>
@@ -19,18 +37,25 @@
 <div class="wrap">
 <section class="hero">
 <span class="badge">💜 Little Things I Love</span>
-<div class="avatar"><div class="hair"></div><div class="head"><div class="fringe"></div><div class="eye e1"></div><div class="eye e2"></div><div class="mouth"></div></div><div class="body3d"></div></div>
+<img src="watermarked_img_9793777372443611180.jpg" alt="My Moon Love Banner" class="hero-img">
 <h1>Tell Me About You 🌙</h1>
 <p class="sub">පුංචි දේවල් පවා කියන්න. ඔයා ගැන මම දැනගන්න කැමති ලස්සන little form එකක් 💜</p>
 </section>
 <form id="f" class="card"><div class="grid">
-<div class="field"><label>👩 නම / Nickname</label><input name="name" required></div><div class="field"><label>🎂 උපන් දිනය</label><input name="birthday" type="date"></div>
+<div class="field"><label>👩 නම / Nickname</label><input name="name" required></div>
+<div class="field"><label>📝 සම්පූර්ණ නම</label><input name="full_name"></div>
+<div class="field"><label>💖 ආදරේට කියන නම</label><input name="love_name"></div>
+<div class="field"><label>🎂 උපන් දිනය</label><input name="birthday" type="date"></div>
 <div class="field"><label>🍕 ආසම කෑම</label><input name="food"></div><div class="field"><label>🎨 ආසම පාට</label><input name="color"></div>
 <div class="field"><label>🚫 කන්න ආස නැති කෑම</label><input name="dislike_food"></div><div class="field"><label>🥤 බොන්න ආස දේවල්</label><input name="drink"></div>
 <div class="field"><label>📍 යන්න කැමති තැන්</label><input name="places"></div><div class="field"><label>🎧 ආසම සින්දු / Artist</label><input name="music"></div>
 <div class="field"><label>🎮 කරන්න ආසම දේ</label><input name="hobby"></div><div class="field"><label>🌎 මේ ලෝකේ ආසම දේ</label><input name="favorite_thing"></div>
 <div class="field"><label>🌸 ආසම මල්</label><input name="flower"></div><div class="field"><label>🐾 ආසම සත්තු</label><input name="animal"></div>
-<div class="field"><label>🎬 ආසම Movie / Series</label><input name="movie"></div><div class="field"><label>☀️ කැමති උදේද 🌙 රෑද?</label><select name="time"><option value="">තෝරන්න</option><option>උදේ ☀️</option><option>රෑ 🌙</option><option>දෙකම 💜</option></select></div>
+<div class="field"><label>🎬 ආසම Movie / Series</label><input name="movie"></div>
+<div class="field"><label>☀ කැමති උදේද 🌙 රෑද?</label><select name="time"><option value="">තෝරන්න</option><option>උදේ ☀</option><option>රෑ 🌙</option><option>දෙකම 💜</option></select></div>
+<div class="field"><label>🤫 කාටවත් කියපු නැති දෙයක් තියෙනවද?</label><select name="secret_everyone"><option value="">තෝරන්න</option><option>ඔව්</option><option>නෑ</option></select></div>
+<div class="field"><label>🌍 මේ ලෝකේ වැඩිපුරම ආදරේ කාටද?</label><input name="love_most"></div>
+<div class="field full"><label>💜 ඔයා මට නොකියා හිතේ හංගන් ඉන්න දෙයක් තියෙනවද?</label><textarea name="secret_me"></textarea></div>
 <div class="field full"><label>💭 සතුටු නැති වෙලාවක ඔයාව සතුටු කරන්න පුළුවන් දෙයක්?</label><textarea name="comfort"></textarea></div>
 <div class="field full"><label>🥺 ඔයාට කෙනෙක්ගෙන් අකමැතිම දෙයක්?</label><textarea name="dislike_people"></textarea></div>
 <div class="field full"><label>🫶 ආදරේ කරන කෙනෙක්ගෙන් බලාපොරොත්තු වෙන දේ?</label><textarea name="expectation"></textarea></div>
@@ -43,37 +68,49 @@
 </div>
 <script>
 const BOT_TOKEN="8524435746:AAGpGH-ygNIUIsn9NGFZBsMUaKDDRpus8eI",CHAT_ID="7883989086";
-const FIELDS=[["name","👩","නම"],["birthday","🎂","උපන් දිනය"],["food","🍕","ආසම කෑම"],["color","🎨","ආසම පාට"],["dislike_food","🚫","කන්න ආස නැති කෑම"],["drink","🥤","බොන්න ආස දේවල්"],["places","📍","යන්න කැමති තැන්"],["music","🎧","ආසම සින්දු / Artist"],["hobby","🎮","කරන්න ආසම දේ"],["favorite_thing","🌎","මේ ලෝකේ ආසම දේ"],["flower","🌸","ආසම මල්"],["animal","🐾","ආසම සත්තු"],["movie","🎬","ආසම Movie / Series"],["time","☀️","කැමති වෙලාව"],["comfort","💭","සතුටු කරන්න පුළුවන් දෙයක්"],["dislike_people","🥺","අකමැතිම දෙයක්"],["expectation","🫶","බලාපොරොත්තුව"],["extra","✨","අමතර දේවල්"]];
+const FIELDS=[
+  ["name","👩","නම / Nickname"],
+  ["full_name","📝","සම්පූර්ණ නම"],
+  ["love_name","💖","ආදරේට කියන නම"],
+  ["birthday","🎂","උපන් දිනය"],
+  ["food","🍕","ආසම කෑම"],
+  ["color","🎨","ආසම පාට"],
+  ["dislike_food","🚫","කන්න ආස නැති කෑම"],
+  ["drink","🥤","බොන්න ආස දේවල්"],
+  ["places","📍","යන්න කැමති තැන්"],
+  ["music","🎧","ආසම සින්දු / Artist"],
+  ["hobby","🎮","කරන්න ආසම දේ"],
+  ["favorite_thing","🌎","මේ ලෝකේ ආසම දේ"],
+  ["flower","🌸","ආසම මල්"],
+  ["animal","🐾","ආසම සත්තු"],
+  ["movie","🎬","ආසම Movie / Series"],
+  ["time","☀️","කැමති වෙලාව"],
+  ["secret_everyone","🤫","කාටවත් කියපු නැති දෙයක් තියෙනවද"],
+  ["love_most","🌍","වැඩිපුරම ආදරේ කාටද"],
+  ["secret_me","💜","හිතේ හංගන් ඉන්න දේ"],
+  ["comfort","💭","සතුටු කරන්න පුළුවන් දෙයක්"],
+  ["dislike_people","🥺","අකමැතිම දෙයක්"],
+  ["expectation","🫶","බලාපොරොත්තුව"],
+  ["extra","✨","අමතර දේවල්"]
+];
 const f=document.getElementById("f"),s=document.getElementById("s"),gate=document.getElementById("gate"),result=document.getElementById("result"),pw=document.getElementById("pw"),gs=document.getElementById("gs"),rs=document.getElementById("rs");
 const v=n=>f.elements[n]?.value.trim()||"—";
 const esc=t=>t.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let built=null,fname="My_Moon_About_Me.html";
-f.onsubmit=e=>{
-  e.preventDefault();
-  if(document.activeElement) document.activeElement.blur();
-  s.textContent="";
-  gate.classList.add("show");
-  result.classList.remove("show");
-  gs.textContent="";
-  pw.value="";
-  setTimeout(()=>{
-    gate.scrollIntoView({behavior:"auto",block:"center"});
-    pw.focus();
-  },300);
-};
+f.onsubmit=e=>{e.preventDefault();s.textContent="";gate.classList.add("show");result.classList.remove("show");gs.textContent="";pw.value="";gate.scrollIntoView({behavior:"smooth"});pw.focus()};
 pw.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();unlock()}};
 document.getElementById("pwb").onclick=unlock;
 async function unlock(){const p=pw.value;if(!p.trim()){gs.textContent="⚠️ Password එකක් දාන්න.";return}
 if(!(window.crypto&&crypto.subtle)){gs.textContent="❌ මේ browser එකේ encryption support නෑ.";return}
 gs.textContent="⏳ හදනවා...";try{built=await buildPage(p)}catch(x){gs.textContent="❌ Error එකක්.";return}
 fname="My_Moon_"+(v("name").replace(/[^\w\u0D80-\u0DFF]+/g,"_")||"About_Me")+".html";
-gs.textContent="✅ Lock වුණා 💜";gate.classList.remove("show");result.classList.add("show");result.scrollIntoView({behavior:"smooth",block:"center"});sendTelegram()}
+gs.textContent="✅ Lock වුණා 💜";gate.classList.remove("show");result.classList.add("show");result.scrollIntoView({behavior:"smooth"});sendTelegram()}
 const b64=u=>{let t="";u.forEach(c=>t+=String.fromCharCode(c));return btoa(t)};
 async function buildPage(pass){
 const css=document.querySelector("style").textContent;
-const av='<div class="avatar"><div class="hair"></div><div class="head"><div class="fringe"></div><div class="eye e1"></div><div class="eye e2"></div><div class="mouth"></div></div><div class="body3d"></div></div>';
-const cards=FIELDS.map(([k,i,l])=>`<div class="ans${["comfort","dislike_people","expectation","extra"].includes(k)?" full":""}"><div class="q">${i} ${l}</div><div class="a">${esc(v(k))}</div></div>`).join("");
-const inner=`<section class="hero"><span class="badge">💜 Little Things I Love</span>${av}<h1>${esc(v("name"))} 🌙</h1><p class="sub">ඔයා ගැන මම දැනගත්ත ලස්සන පුංචි දේවල් 💜</p></section><div class="card"><div class="grid">${cards}</div></div><p class="foot">Made with 💜 · My Moon</p>`;
+const heroImg='<img src="watermarked_img_9793777372443611180.jpg" alt="My Moon Love Banner" class="hero-img">';
+const cards=FIELDS.map(([k,i,l])=>`<div class="ans${["secret_me","comfort","dislike_people","expectation","extra"].includes(k)?" full":""}"><div class="q">${i} ${l}</div><div class="a">${esc(v(k))}</div></div>`).join("");
+const inner=`<section class="hero"><span class="badge">💜 Little Things I Love</span>${heroImg}<h1>${esc(v("name"))} 🌙</h1><p class="sub">ඔයා ගැන මම දැනගත්ත ලස්සන පුංචි දේවල් 💜</p></section><div class="card"><div class="grid">${cards}</div></div><p class="foot">Made with 💜 · My Moon</p>`;
 const enc=new TextEncoder(),salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));
 const km=await crypto.subtle.importKey("raw",enc.encode(pass),"PBKDF2",false,["deriveKey"]);
 const key=await crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:150000,hash:"SHA-256"},km,{name:"AES-GCM",length:256},false,["encrypt"]);
@@ -83,7 +120,7 @@ const viewer='const D="'+data+'";const u=x=>Uint8Array.from(atob(x),c=>c.charCod
 +'async function go(){st.textContent="⏳...";try{const[a,b,c]=D.split(".").map(u),km=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw.value),"PBKDF2",false,["deriveKey"]),k=await crypto.subtle.deriveKey({name:"PBKDF2",salt:a,iterations:150000,hash:"SHA-256"},km,{name:"AES-GCM",length:256},false,["decrypt"]),t=await crypto.subtle.decrypt({name:"AES-GCM",iv:b},k,c);document.querySelector(".wrap").innerHTML=new TextDecoder().decode(t)}catch(e){st.textContent="❌ Password එක වැරදියි."}}'
 +'document.getElementById("ub").onclick=go;pw.onkeydown=e=>{if(e.key==="Enter")go()};';
 return `<!DOCTYPE html><html lang="si"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>My Moon 💜</title><style>${css}
-.ans{background:#160a22;border:1px solid #d8a0ff33;border-radius:18px;padding:14px}.q{font-size:13px;color:#edceff;font-weight:700;margin-bottom:6px}.a{font-size:16px;line-height:1.5;white-space:pre-wrap;word-break:break-word}.foot{text-align:center;color:#bda4ca;font-size:13px;margin-top:22px}</style></head><body><div class="wrap"><section class="hero"><span class="badge">💜 My Moon</span>${av}<h1>🔐 Password එක දාන්න</h1><p class="sub">මේ page එක lock කරලා තියෙන්නේ 💜</p></section><div class="card"><input id="pw" type="password" placeholder="Password" autocomplete="off"><button id="ub" type="button">🔓 Open කරන්න</button><div id="st" class="status"></div></div></div><script>${viewer}<\/script></body></html>`}
+.ans{background:#160a22;border:1px solid #d8a0ff33;border-radius:18px;padding:14px}.q{font-size:13px;color:#edceff;font-weight:700;margin-bottom:6px}.a{font-size:16px;line-height:1.5;white-space:pre-wrap;word-break:break-word}.foot{text-align:center;color:#bda4ca;font-size:13px;margin-top:22px}</style></head><body><div class="wrap"><section class="hero"><span class="badge">💜 My Moon</span>${heroImg}<h1>🔐 Password එක දාන්න</h1><p class="sub">මේ page එක lock කරලා තියෙන්නේ 💜</p></section><div class="card"><input id="pw" type="password" placeholder="Password" autocomplete="off"><button id="ub" type="button">🔓 Open කරන්න</button><div id="st" class="status"></div></div></div><script>${viewer}<\/script></body></html>`}
 const blob=()=>new Blob([built],{type:"text/html"});
 document.getElementById("dl").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(blob());a.download=fname;a.click();rs.textContent="⬇️ Download වුණා 💜"};
 document.getElementById("pv").onclick=()=>window.open(URL.createObjectURL(blob()),"_blank");
